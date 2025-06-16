@@ -153,6 +153,7 @@
     <?php endif; ?>
 
     <!-- Upload Section -->
+    <!-- The following section is removed as requested:
     <div class="mt-5">
         <h5 class="mb-4">Upload for Programme Code: <?= esc($programme_code) ?></h5>
         <form method="post" enctype="multipart/form-data" action="<?= base_url('public/upload') ?>">
@@ -165,6 +166,7 @@
             <button type="submit" class="btn btn-primary">Upload File</button>
         </form>
     </div>
+    -->
 </div>
 </body>
 

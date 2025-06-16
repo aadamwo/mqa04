@@ -87,10 +87,7 @@
                   <span class="sidenav-mini-icon"> SecA</span>
                   <span class="sidenav-normal">Section A</span>
               </a>
-              <a class="nav-link" href="<?= base_url('public') ?>">
-              <span class="sidenav-mini-icon"> public</span>
-              <span class="sidenav-normal">Public</span>
-          </a>
+             
           <a class="nav-link" href="<?= base_url('program') ?>">
               <span class="sidenav-mini-icon"> Program</span>
               <span class="sidenav-normal">program</span>

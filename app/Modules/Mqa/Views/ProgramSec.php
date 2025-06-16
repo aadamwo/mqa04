@@ -1,5 +1,4 @@
 <?php
-
 // filepath: c:\laragon\www\mpquaapp\app\Modules\Mqa\Views\ProgramSec.php
 ?>
 <main id="js-page-content" role="main" class="page-content">
@@ -39,7 +38,7 @@
                         <th>Total Credits</th>
                         <th>Delivery Mode</th>
                         <th>More Info</th>
-                        <th>Upload</th> <!-- New column for the upload/go to PubA button -->
+                        <th>Upload</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,7 +59,6 @@
                                 </button>
                             </td>
                             <td>
-                                <!-- Button to go to PubA.php -->
                                 <a href="<?= base_url('PubA.php?programme_code=' . urlencode($program->mcd_programme_code)) ?>" class="btn btn-success btn-sm">Upload</a>
                             </td>
                         </tr>

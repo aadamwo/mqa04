@@ -26,11 +26,12 @@ class ProgramController extends BaseController
 
     public function index()
     {
+       
         $programs = $this->programModel
             ->select('program.*, mqa04_compliance_documents.mcd_programme_code')
             ->join(
                 'mqa04_compliance_documents',
-                'mqa04_compliance_documents.mcd_programme_code = CAST(program.p_mcd_id AS TEXT)',
+                'mqa04_compliance_documents.mcd_id = program.p_mcd_id',
                 'left'
             )
             ->findAll();

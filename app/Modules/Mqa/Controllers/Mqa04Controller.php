@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\MqaComDocModel;
 use App\Models\MqaComSectionModel;
 use App\Models\MqaComItemModel;
+use App\Models\ProgramModel; // Add this line
 
 class Mqa04Controller extends BaseController
 {
@@ -175,7 +176,7 @@ class Mqa04Controller extends BaseController
         return redirect()->back()->with('success', 'Item Section B berjaya ditambah.');
     }
 
-    public function deleteItem($id)
+    public function deleteItem1($id)
     {
         // Delete related documents
         $this->MqaComDocModel->where('mcd_mci_id', $id)->delete();
@@ -186,7 +187,7 @@ class Mqa04Controller extends BaseController
         return redirect()->back()->with('success', 'Item dan semua data berkaitan berjaya dipadam.');
     }
 
-    public function editItem($id)
+    public function editItem1($id)
     {
         // Only update fields that are present in the POST data
         $itemData = [];
@@ -289,4 +290,132 @@ class Mqa04Controller extends BaseController
 
         return $this->render_admin('AdminSec', $data);
     }
+
+    public function adminProg() // Add this function
+    {
+        $programModel = new ProgramModel();
+        $programs = $programModel->findAll();
+
+        $data = [
+            'programs' => $programs
+        ];
+
+        return $this->render_admin('AdminProg', $data);
+    }
+
+    public function editProgram($id)
+    {
+        $data = [
+            'p_reference_number'    => $this->request->getPost('p_reference_number'),
+            'p_qualification_name'  => $this->request->getPost('p_qualification_name'),
+            'p_inst_name'           => $this->request->getPost('p_inst_name'),
+            'p_mcd_id'              => $this->request->getPost('mcd_programme_code'),
+            'p_qualification_level' => $this->request->getPost('p_qualification_level'),
+            'p_nec_field'           => $this->request->getPost('p_nec_field'),
+            'p_total_credits'       => $this->request->getPost('p_total_credits'),
+            'p_delivery_mode'       => $this->request->getPost('p_delivery_mode'),
+            // Add other fields as needed
+        ];
+        $programModel = new \App\Models\ProgramModel();
+        $programModel->update($id, $data);
+        return redirect()->back()->with('success', 'Program updated successfully.');
+    }
+
+    public function adminSection($sectionChar = null)
+    {
+        $section = $this->MqaComSectionModel
+            ->where('mcs_section_char', $sectionChar)
+            ->first();
+
+        $items = [];
+        if ($section) {
+            $items = $this->MqaComItemModel
+                ->select('mqa04_compliance_item.*, 
+                          mqa04_compliance_documents.mcd_id, 
+                          mqa04_compliance_documents.mcd_file, 
+                          mqa04_compliance_documents.mcd_original_file_name, 
+                          mqa04_compliance_documents.mcd_new_file_name, 
+                          mqa04_compliance_documents.mcd_programme_code,
+                          mqa04_compliance_documents.mcd_message')
+                ->join('mqa04_compliance_documents', 'mqa04_compliance_documents.mcd_mci_id = mqa04_compliance_item.mci_id', 'left')
+                ->where('mqa04_compliance_item.mci_mcs_id', $section->mcs_id)
+                ->orderBy('mqa04_compliance_item.mci_sequence', 'asc')
+                ->findAll();
+        }
+
+        $data = [
+            'section' => $section,
+            'items'   => $items,
+            'sectionChar' => $sectionChar,
+        ];
+
+        return $this->render_admin('AdminSection', $data);
+    }
+    public function addSection()
+    {
+        $sectionModel = new MqaComSectionModel();
+
+        $data = [
+            'mcs_section_char' => strtoupper($this->request->getPost('mcs_section_char')),
+            'mcs_desc'         => $this->request->getPost('mcs_desc'),
+        ];
+
+        $sectionModel->insert($data);
+
+        return redirect()->back()->with('success', 'Section added successfully!');
+    }
+
+    public function section($sectionChar)
+    {
+        $sectionModel = new \App\Models\MqaComSectionModel();
+        $itemModel = new \App\Models\MqaComItemModel();
+
+        $section = $sectionModel->where('mcs_section_char', strtoupper($sectionChar))->first();
+        if (!$section) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Section not found");
+        }
+
+        $items = $itemModel->where('mci_mcs_id', $section->mcs_id)->orderBy('mci_sequence')->findAll();
+
+        return view('Modules\Mqa\Views\SecSection', [
+            'section' => $section,
+            'items' => $items,
+            'sectionChar' => strtoupper($sectionChar),
+        ]);
+    }
+    public function addItem($sectionChar)
+    {
+        $sectionModel = new MqaComSectionModel();
+        $itemModel = new MqaComItemModel();
+
+        $section = $sectionModel->where('mcs_section_char', strtoupper($sectionChar))->first();
+        if (!$section) {
+            return redirect()->back()->with('error', 'Section not found');
+        }
+
+        $itemModel->insert([
+            'mci_mcs_id' => $section->mcs_id,
+            'mci_desc' => $this->request->getPost('mci_desc'),
+            'mci_sequence' => $this->request->getPost('mci_sequence'),
+        ]);
+        return redirect()->back()->with('success', 'Item added');
+    }
+    public function editItem2($sectionChar, $itemId)
+    {
+        $itemModel = new \App\Models\MqaComItemModel();
+        $itemModel->update($itemId, [
+            'mci_desc' => $this->request->getPost('mci_desc'),
+            'mci_sequence' => $this->request->getPost('mci_sequence'),
+        ]);
+        return redirect()->back()->with('success', 'Item updated');
+    }
+
+    public function deleteItem2($sectionChar, $itemId)
+    {
+        $itemModel = new \App\Models\MqaComItemModel();
+        $itemModel->delete($itemId);
+        return redirect()->back()->with('success', 'Item deleted');
+    }
+
 }
+

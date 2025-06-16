@@ -18,6 +18,7 @@
 
     <!-- SECTION A -->
     <h5 class="mb-4">SECTION A: <?= esc($sectionA->mcs_desc ?? '') ?></h5>
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addItemModalA">Add Item</button>
     <table class="table table-bordered">
         <thead class="table-secondary">
         <tr>
@@ -91,9 +92,51 @@
         </tbody>
     </table>
 
+    <!-- Add Item Modal -->
+    <div class="modal fade" id="addItemModalA" tabindex="-1" aria-labelledby="addItemModalLabelA" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="<?= base_url('seca/add-item') ?>" enctype="multipart/form-data">
+                    <?= csrf_field() ?>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addItemModalLabelA">Add Item to Section A</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Programme Code -->
+                        <div class="mb-3">
+                            <label class="form-label">Programme Code</label>
+                            <input type="text" name="mcd_programme_code" class="form-control" required>
+                        </div>
+                        <!-- Perkara -->
+                        <div class="mb-3">
+                            <label class="form-label">Perkara</label>
+                            <input type="text" name="mci_desc" class="form-control" required>
+                        </div>
+                        <!-- Evidence File (upload) -->
+                        <div class="mb-3">
+                            <label class="form-label">Evidence File</label>
+                            <input type="file" name="mcd_file" class="form-control" required>
+                        </div>
+                        <!-- Message -->
+                        <div class="mb-3">
+                            <label class="form-label">Message</label>
+                            <input type="text" name="mcd_message" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Item</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- SECTION B -->
     <?php if (!empty($sectionB)): ?>
         <h5 class="mt-5 mb-4">SECTION B: <?= esc($sectionB->mcs_desc ?? '') ?></h5>
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addItemModalB">Add Item</button>
         <table class="table table-bordered">
             <thead class="table-secondary">
             <tr>
@@ -166,10 +209,55 @@
             <?php endforeach; ?>
             </tbody>
         </table>
+
+        <!-- Add Item Modal -->
+        <div class="modal fade" id="addItemModalB" tabindex="-1" aria-labelledby="addItemModalLabelB" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="post" action="<?= base_url('seca/add-item') ?>" enctype="multipart/form-data">
+                        <?= csrf_field() ?>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addItemModalLabelB">Add Item to Section B</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Programme Code -->
+                            <div class="mb-3">
+                                <label class="form-label">Programme Code</label>
+                                <input type="text" name="mcd_programme_code" class="form-control" required>
+                            </div>
+                            <!-- Perkara -->
+                            <div class="mb-3">
+                                <label class="form-label">Perkara</label>
+                                <input type="text" name="mci_desc" class="form-control" required>
+                            </div>
+                            <!-- Evidence File (upload) -->
+                            <div class="mb-3">
+                                <label class="form-label">Evidence File</label>
+                                <input type="file" name="mcd_file" class="form-control" required>
+                            </div>
+                            <!-- Message -->
+                            <div class="mb-3">
+                                <label class="form-label">Message</label>
+                                <input type="text" name="mcd_message" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Add Item</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     <?php endif; ?>
 
     <div class="text-center my-4">
         <a href="<?= base_url('SecA.php') ?>" class="btn btn-secondary">Back</a>
+    </div>
+    <!-- Add this section for the button -->
+    <div class="mb-4 text-end">
+        <a href="<?= base_url('adminprog') ?>" class="btn btn-primary">Go to Admin Program</a>
     </div>
 </div>
 
