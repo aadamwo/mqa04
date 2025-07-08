@@ -11,61 +11,7 @@
 <head>
     <title>Admin Evidence & Message Table</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .btn-icon {
-            width: 32px;
-            height: 32px;
-            padding: 0;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            border: none;
-            transition: all 0.2s ease;
-        }
-        .btn-add {
-            background-color: #007bff !important;
-            color: white !important;
-            border-color: #007bff !important;
-        }
-        .btn-add:hover {
-            background-color: #0056b3 !important;
-            color: white !important;
-            border-color: #0056b3 !important;
-            transform: translateY(-1px);
-        }
-        .btn-edit {
-            background-color: #ffc107 !important;
-            color: #212529 !important;
-            border-color: #ffc107 !important;
-        }
-        .btn-edit:hover {
-            background-color: #e0a800 !important;
-            color: #212529 !important;
-            border-color: #e0a800 !important;
-            transform: translateY(-1px);
-        }
-        .btn-delete {
-            background-color: #dc3545 !important;
-            color: white !important;
-            border-color: #dc3545 !important;
-        }
-        .btn-delete:hover {
-            background-color: #c82333 !important;
-            color: white !important;
-            border-color: #c82333 !important;
-            transform: translateY(-1px);
-        }
-        .btn-icon i {
-            font-size: 14px;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 <div class="container mt-5">
@@ -73,10 +19,7 @@
 
     <?php foreach ($sections as $section): ?>
         <h5 class="mb-4">SECTION <?= esc($section->mcs_section_char) ?>: <?= esc($section->mcs_desc) ?></h5>
-        <!-- Add Item Button (icon only, with tooltip) -->
-        <button class="btn btn-icon btn-add mb-3" data-bs-toggle="modal" data-bs-target="#addItemModal<?= esc($section->mcs_section_char) ?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Add Item">
-            <i class="fas fa-plus"></i>
-        </button>
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addItemModal<?= esc($section->mcs_section_char) ?>">Add Item</button>
         <table class="table table-bordered">
             <thead class="table-secondary">
             <tr>
@@ -224,19 +167,57 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4 gap-2">
         <a href="<?= base_url('SecA.php') ?>" class="btn btn-secondary">&larr; Back</a>
+        <a href="<?= base_url('AdminSec.php?section=A') ?>" class="btn btn-primary">Go to Section A</a>
         <a href="<?= base_url('AdminSecB.php?section=B') ?>" class="btn btn-primary">Go to Section B</a>
         <a href="<?= base_url('adminprog') ?>" class="btn btn-primary">Go to Admin Program</a>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Initialize tooltips for all buttons with data-bs-toggle="tooltip"
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
-</script>
 </body>
 </html>
 <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div>
+
+<style>
+    .btn-icon {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        border: none;
+        transition: all 0.2s ease;
+    }
+    .btn-edit {
+        background-color: #ffc107 !important;
+        color: #212529 !important;
+        border-color: #ffc107 !important;
+    }
+    .btn-edit:hover {
+        background-color: #e0a800 !important;
+        color: #212529 !important;
+        border-color: #e0a800 !important;
+        transform: translateY(-1px);
+    }
+    .btn-delete {
+        background-color: #dc3545 !important;
+        color: white !important;
+        border-color: #dc3545 !important;
+    }
+    .btn-delete:hover {
+        background-color: #c82333 !important;
+        color: white !important;
+        border-color: #c82333 !important;
+        transform: translateY(-1px);
+    }
+    .btn-icon i {
+        font-size: 14px;
+    }
+    .action-buttons {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+    }
+</style>

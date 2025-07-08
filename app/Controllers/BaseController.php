@@ -120,6 +120,21 @@ abstract class BaseController extends Controller
         echo view('admin_layout/main', $array);
     }
 
+        public function render_public($view, $data)
+            {
+                $view_path = 'Modules\\Mqa\\Views\\' . $view;
+
+                $array = [
+                    'data' => $data,
+                    'view' => $view_path
+                ];
+
+                echo view('public_layout/main', $array);
+            }
+
+
+
+
     public function render_super_admin($view, $data)
     {
         $uri = service('uri');

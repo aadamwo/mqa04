@@ -1,5 +1,5 @@
 <?php
-// filepath: c:\laragon\www\mpquaapp\app\Modules\Mqa\Views\PubA.php
+// filepath: c:\laragon\www\mpquaapp\app\Modules\Mqa\Views\PubB.php
 ?>
 
 <!DOCTYPE html>
@@ -262,9 +262,7 @@
             background-color: white;
             border-radius: 6px;
             width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
+            max-width: 500px;
             padding: 2rem;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
         }
@@ -296,37 +294,6 @@
             width: 100%;
             min-height: 150px;
             margin-bottom: 1rem;
-        }
-
-        .message-item {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 1rem;
-        }
-
-        .message-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-
-        .message-meta {
-            font-size: 0.85rem;
-            color: var(--gray);
-            margin-bottom: 0.5rem;
-        }
-
-        .message-content {
-            white-space: pre-wrap;
-        }
-
-        .message-btn {
-            cursor: pointer;
-            color: var(--accent);
-            transition: all 0.2s ease;
-        }
-
-        .message-btn:hover {
-            color: #2980b9;
         }
 
         @media (max-width: 767px) {
@@ -382,8 +349,11 @@
                     <a href="<?= base_url('listprog/' . esc($program_slug)) ?>" class="btn btn-light">
                         <i class="fas fa-arrow-left"></i> Back
                     </a>
-                    <a href="<?= base_url('PubB.php?programme_code=' . urlencode($programme_code) . '&section=B') ?>" class="btn btn-accent">
-                        <i class="fas fa-arrow-right"></i> Section B
+                    <a href="<?= base_url('PubA.php?programme_code=' . urlencode($programme_code) . '&section=A') ?>" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Section A
+                    </a>
+                    <a href="<?= base_url('PubC.php?programme_code=' . urlencode($programme_code) . '&section=C') ?>" class="btn btn-accent">
+                        <i class="fas fa-arrow-right"></i> Section C
                     </a>
                 </div>
             </div>
@@ -478,7 +448,6 @@
             <textarea name="mcd_message" class="form-control message-textarea" id="messageTextarea" placeholder="Type your message here..."></textarea>
             <button type="submit" class="btn btn-primary">Send Message</button>
         </form>
-        
     </div>
 </div>
 
@@ -502,23 +471,12 @@
         document.getElementById('modalMciId').value = mciId;
         document.getElementById('modalProgrammeCode').value = programmeCode;
         document.getElementById('messageTextarea').value = currentMessage || '';
-        
-        
-        
         modal.style.display = 'flex';
     }
 
     function closeMessageModal() {
         document.getElementById('messageModal').style.display = 'none';
     }
-
-   
-        // For now, we'll just show a placeholder
-        document.getElementById('messageHistory').innerHTML = `
-            <h6>Message History</h6>
-            <p>Loading message history...</p>
-        `;
-    
 
     // Handle form submission
     document.getElementById('messageForm').addEventListener('submit', function(e) {
@@ -534,13 +492,8 @@
         .then(data => {
             if (data.success) {
                 alert('Message sent successfully!');
-                // Reload the message history
-                loadMessageHistory(
-                    document.getElementById('modalMciId').value,
-                    document.getElementById('modalProgrammeCode').value
-                );
-                // Clear the textarea
-                document.getElementById('messageTextarea').value = '';
+                closeMessageModal();
+                // You might want to refresh the page or update the UI here
             } else {
                 alert('Error sending message: ' + (data.message || 'Unknown error'));
             }

@@ -78,19 +78,19 @@
                 <span class="sidenav-mini-icon"> Test </span>
                 <span class="sidenav-normal">Test </span>
               </a>
-              <a class="nav-link " href="<?= base_url() ?>mqa/admin">
+              <!-- <a class="nav-link " href="<?= base_url() ?>mqa/admin">
                 <span class="sidenav-mini-icon"> Admin </span>
                 <span class="sidenav-normal">Admin </span>
-              </a>
+              </a> -->
               
               <a class="nav-link" href="<?= base_url('seca') ?>">
-                  <span class="sidenav-mini-icon"> SecA</span>
-                  <span class="sidenav-normal">Section A</span>
+                  <span class="sidenav-mini-icon"> Admin</span>
+                  <span class="sidenav-normal">Admin</span>
               </a>
              
           <a class="nav-link" href="<?= base_url('program') ?>">
-              <span class="sidenav-mini-icon"> Program</span>
-              <span class="sidenav-normal">program</span>
+              <span class="sidenav-mini-icon"> Public</span>
+              <span class="sidenav-normal">Public</span>
           </a>
             </li>
           </ul>

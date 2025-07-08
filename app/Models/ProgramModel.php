@@ -30,11 +30,11 @@ class ProgramModel extends Model
         'p_mqf_level',
         'p_nec_field',
         'p_total_credits',
-        'p_study_duration',
         'p_delivery_mode',
         'p_created_at',
         'p_updated_at',
-        'p_deleted_at'
+        'p_deleted_at',
+        'p_slug'
     ];
 
     // Dates
@@ -44,5 +44,17 @@ class ProgramModel extends Model
     protected $updatedField  = 'p_updated_at';
     protected $deletedField  = 'p_deleted_at';
 
-    
+    // Get program by slug
+    public function getProgramBySlug($slug)
+    {
+        return $this->select('program.*, mqa04_compliance_documents.mcd_programme_code')
+            ->join(
+                'mqa04_compliance_documents',
+                'mqa04_compliance_documents.mcd_id = program.p_mcd_id',
+                'left'
+            )
+            ->where('program.p_slug', $slug)
+            ->first();
+    }
+
 }
