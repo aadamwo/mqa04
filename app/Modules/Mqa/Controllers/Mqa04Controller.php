@@ -509,7 +509,9 @@ public function seca() //main
     $programModel = new \App\Models\ProgramModel();
     $studyModeModel = new \App\Models\StudyModeModel();
 
-    // 1. Update program fields (same as your code)
+    // Generate slug from qualification name
+    $slug = $this->generateSlug($this->request->getPost('p_qualification_name'));
+
     $data = [
         'p_reference_number'    => $this->request->getPost('p_reference_number'),
         'p_qualification_name'  => $this->request->getPost('p_qualification_name'),
@@ -519,7 +521,7 @@ public function seca() //main
         'p_total_credits'       => $this->nullIfEmpty($this->request->getPost('p_total_credits')),
         'p_delivery_mode'       => $this->request->getPost('p_delivery_mode'),
         'p_certificate_number'  => $this->request->getPost('p_certificate_number'),
-        'p_accreditation_date'  => $this->request->getPost('p_accreditation_date'),
+        'p_accreditation_date'  => $this->nullIfEmpty($this->request->getPost('p_accreditation_date')),
         'p_inst_address'        => $this->request->getPost('p_inst_address'),
         'p_phone_number'        => $this->request->getPost('p_phone_number'),
         'p_fax_number'          => $this->request->getPost('p_fax_number'),
@@ -527,6 +529,7 @@ public function seca() //main
         'p_website'             => $this->request->getPost('p_website'),
         'p_compliance_audit'    => $this->request->getPost('p_compliance_audit'),
         'p_mqf_level'           => $this->request->getPost('p_mqf_level'),
+        'p_slug'                => $slug, // <-- update slug here
     ];
     $programModel->update($id, $data);
 
@@ -594,7 +597,9 @@ public function seca() //main
 {
     $programModel = new \App\Models\ProgramModel();
 
-    // 1. Insert the program first (without p_mcd_id)
+    // Generate slug from qualification name
+    $slug = $this->generateSlug($this->request->getPost('p_qualification_name'));
+
     $data = [
         'p_reference_number'    => $this->request->getPost('p_reference_number'),
         'p_qualification_name'  => $this->request->getPost('p_qualification_name'),
@@ -604,7 +609,7 @@ public function seca() //main
         'p_total_credits'       => $this->nullIfEmpty($this->request->getPost('p_total_credits')),
         'p_delivery_mode'       => $this->request->getPost('p_delivery_mode'),
         'p_certificate_number'  => $this->request->getPost('p_certificate_number'),
-        'p_accreditation_date'  => $this->request->getPost('p_accreditation_date'),
+        'p_accreditation_date'  => $this->nullIfEmpty($this->request->getPost('p_accreditation_date')),
         'p_inst_address'        => $this->request->getPost('p_inst_address'),
         'p_phone_number'        => $this->request->getPost('p_phone_number'),
         'p_fax_number'          => $this->request->getPost('p_fax_number'),
@@ -612,6 +617,7 @@ public function seca() //main
         'p_website'             => $this->request->getPost('p_website'),
         'p_compliance_audit'    => $this->request->getPost('p_compliance_audit'),
         'p_mqf_level'           => $this->request->getPost('p_mqf_level'),
+        'p_slug'                => $slug, // <-- insert slug here
     ];
     $programModel->insert($data);
     $p_id = $programModel->getInsertID();
@@ -691,6 +697,19 @@ public function seca() //main
         $sectionModel->delete($section->mcs_id);
 
         return redirect()->back()->with('success', 'Section and all related items deleted successfully!');
+    }
+    protected function generateSlug($string)
+    {
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string)));
+        // Ensure uniqueness
+        $programModel = new \App\Models\ProgramModel();
+        $baseSlug = $slug;
+        $i = 1;
+        while ($programModel->where('p_slug', $slug)->first()) {
+            $slug = $baseSlug . '-' . $i;
+            $i++;
+        }
+        return $slug;
     }
 }
 

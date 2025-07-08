@@ -12,6 +12,50 @@
     <title>Admin Evidence & Message Table</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .btn-icon {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        border: none;
+        transition: all 0.2s ease;
+    }
+    .btn-edit {
+        background-color: #ffc107 !important;
+        color: #212529 !important;
+        border-color: #ffc107 !important;
+    }
+    .btn-edit:hover {
+        background-color: #e0a800 !important;
+        color: #212529 !important;
+        border-color: #e0a800 !important;
+        transform: translateY(-1px);
+    }
+    .btn-delete {
+        background-color: #dc3545 !important;
+        color: white !important;
+        border-color: #dc3545 !important;
+    }
+    .btn-delete:hover {
+        background-color: #c82333 !important;
+        color: white !important;
+        border-color: #c82333 !important;
+        transform: translateY(-1px);
+    }
+    .btn-icon i {
+        font-size: 14px;
+    }
+    .action-buttons {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+    }
+</style>
+
 </head>
 <body>
 <div class="container mt-5">
@@ -178,46 +222,3 @@
 </html>
 <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div>
 
-<style>
-    .btn-icon {
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 6px;
-        border: none;
-        transition: all 0.2s ease;
-    }
-    .btn-edit {
-        background-color: #ffc107 !important;
-        color: #212529 !important;
-        border-color: #ffc107 !important;
-    }
-    .btn-edit:hover {
-        background-color: #e0a800 !important;
-        color: #212529 !important;
-        border-color: #e0a800 !important;
-        transform: translateY(-1px);
-    }
-    .btn-delete {
-        background-color: #dc3545 !important;
-        color: white !important;
-        border-color: #dc3545 !important;
-    }
-    .btn-delete:hover {
-        background-color: #c82333 !important;
-        color: white !important;
-        border-color: #c82333 !important;
-        transform: translateY(-1px);
-    }
-    .btn-icon i {
-        font-size: 14px;
-    }
-    .action-buttons {
-        display: flex;
-        gap: 5px;
-        align-items: center;
-    }
-</style>

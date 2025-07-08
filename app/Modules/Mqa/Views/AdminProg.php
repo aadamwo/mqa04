@@ -465,58 +465,55 @@
                                 </div>
                                 
                                 <!-- Study Mode Section -->
+                                                               
                                 <hr>
                                 <h6 class="mb-3">Study Mode Information</h6>
-                                
-                                <!-- Long Semester Fields -->
-                                <div class="row">
-                                    <div class="col-md-12 mb-2">
-                                        <h6 class="text-primary">Sepenuh Masa Panjang (Long Semester)</h6>
+                                <?php
+                                $types = ['Sepenuh Masa', 'Separuh Masa'];
+                                foreach ($types as $type):
+                                    $key = strtolower(str_replace(' ', '_', $type));
+                                ?>
+                                <div class="border rounded p-3 mb-3">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <label>Study Mode Type</label>
+                                            <select name="sm_type_new_<?= $key ?>" class="form-control" required>
+                                                <option value="">Select Study Mode</option>
+                                                <option value="Sepenuh Masa" <?= $type == 'Sepenuh Masa' ? 'selected' : '' ?>>Sepenuh Masa</option>
+                                                <option value="Separuh Masa" <?= $type == 'Separuh Masa' ? 'selected' : '' ?>>Separuh Masa</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <label>Long Sem (Bil.Semester)</label>
+                                            <input type="number" name="sm_long_sem_new_<?= $key ?>" class="form-control">
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <label>Short Sem (Bil.Semester)</label>
+                                            <input type="number" name="sm_short_sem_new_<?= $key ?>" class="form-control">
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <label>Long Sem Week (Bil.Minggu)</label>
+                                            <input type="number" name="sm_long_sem_week_new_<?= $key ?>" class="form-control">
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <label>Short Sem Week (Bil.Minggu)</label>
+                                            <input type="number" name="sm_short_sem_week_new_<?= $key ?>" class="form-control">
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <label>Long Sem Total</label>
+                                            <input type="number" name="sm_long_sem_total_new_<?= $key ?>" class="form-control">
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <label>Short Sem Total</label>
+                                            <input type="number" name="sm_short_sem_total_new_<?= $key ?>" class="form-control">
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <label>Duration (Tempoh)</label>
+                                            <input type="text" name="sm_duration_new_<?= $key ?>" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-4 mb-2">
-                                        <label>Long Sem (Bil.Semester)</label>
-                                        <input type="number" name="sm_long_sem" class="form-control" placeholder="e.g., 6">
-                                    </div>
-                                    <div class="col-md-4 mb-2">
-                                        <label>Long Sem Week (Bil.Minggu)</label>
-                                        <input type="number" name="sm_long_sem_week" class="form-control" placeholder="e.g., 17">
-                                    </div>
-                                    <div class="col-md-4 mb-2">
-                                        <label>Long Sem Total</label>
-                                        <input type="number" name="sm_long_sem_total" class="form-control" placeholder="Total weeks">
-                                    </div>
-                                </div>
-                                
-                                <!-- Short Semester Fields -->
-                                <div class="row">
-                                    <div class="col-md-12 mb-2">
-                                        <h6 class="text-success">Pendek (Short Semester)</h6>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4 mb-2">
-                                        <label>Short Sem (Bil.Semester)</label>
-                                        <input type="number" name="sm_short_sem" class="form-control" placeholder="Number of semesters">
-                                    </div>
-                                    <div class="col-md-4 mb-2">
-                                        <label>Short Sem Week (Bil.Minggu)</label>
-                                        <input type="number" name="sm_short_sem_week" class="form-control" placeholder="e.g., 9">
-                                    </div>
-                                    <div class="col-md-4 mb-2">
-                                        <label>Short Sem Total</label>
-                                        <input type="number" name="sm_short_sem_total" class="form-control" placeholder="Total weeks">
-                                    </div>
-                                </div>
-                                
-                                <!-- Duration Field -->
-                                <div class="row">
-                                    <div class="col-md-6 mb-2">
-                                        <label>Duration (Tempoh)</label>
-                                        <input type="text" name="sm_duration" class="form-control" placeholder="e.g., 3 tahun">
-                                    </div>
-                                </div>
+                                <?php endforeach; ?>
                             </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-primary">Add Program</button>

@@ -204,7 +204,6 @@
         <!-- Page Header -->
         <div class="page-header text-center">
             <h2>Program Profiling Dashboard</h2>
-            <p>Comprehensive overview of all accredited programs</p>
         </div>
 
         <!-- Flash Success Message -->
