@@ -1,17 +1,5 @@
 
 <main id="js-page-content" role="main" class="page-content">
-    <ol class="breadcrumb page-breadcrumb">
-        <li class="breadcrumb-item"><a href="javascript:void(0);">SmartAdmin</a></li>
-        <li class="breadcrumb-item">Category</li>
-        <li class="breadcrumb-item">Sub-category</li>
-        <li class="breadcrumb-item active">Page Title</li>
-        <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
-    </ol>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dokumen Pematuhan Akreditasi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -263,8 +251,6 @@
             }
         }
     </style>
-</head>
-<body>
     <div class="container container-main">
         <h4 class="header-title">DOKUMEN PEMATUHAN AKREDITASI PROGRAM</h4>
 
@@ -383,75 +369,44 @@
                                     </thead>
                                     <tbody>
                                     <?php
-                                    $items = $itemModel->where('mci_mcs_id', $section->mcs_id)->orderBy('mci_sequence', 'asc')->findAll();
-                                    foreach ($items as $item): ?>
-                                        <tr>
-                                            <td><span class="badge badge-primary"><?= esc($item->mci_sequence) ?></span></td>
-                                            <td><?= esc($item->mci_desc) ?></td>
-                                            <td>
-                                                <span class="badge badge-info"><?= esc($item->mci_responsibility ?? '-') ?></span>
-                                            </td>
-                                            <td>
-                                                <div class="action-buttons">
-                                                    <!-- Edit Button -->
-                                                    <button type="button" class="btn btn-icon btn-edit" data-bs-toggle="modal" data-bs-target="#editItemModal<?= $item->mci_id ?>" title="Edit Item">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <!-- Delete Button -->
-                                                    <form method="post" action="<?= base_url('section/' . $section->mcs_section_char . '/delete-item/' . $item->mci_id) ?>" style="display:inline;" onsubmit="return confirm('Padam item ini?');">
-                                                        <?= csrf_field() ?>
-                                                        <button type="submit" class="btn btn-icon btn-delete" data-bs-toggle="tooltip" data-bs-placement="top" title="Padam Item">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
+$items = $itemModel->where('mci_mcs_id', $section->mcs_id)->orderBy('mci_sequence', 'asc')->findAll();
 
-                                        <!-- Edit Item Modal -->
-                                        <div class="modal fade" id="editItemModal<?= $item->mci_id ?>" tabindex="-1" aria-labelledby="editItemLabel<?= $item->mci_id ?>" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <form method="post" action="<?= base_url('section/' . $section->mcs_section_char . '/edit-item/' . $item->mci_id) ?>">
-                                                        <?= csrf_field() ?>
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="editItemLabel<?= $item->mci_id ?>">
-                                                                <i class="fas fa-edit me-2"></i>Edit Item
-                                                            </h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Penerangan</label>
-                                                                <input type="text" name="mci_desc" class="form-control" value="<?= esc($item->mci_desc) ?>" required>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Urutan</label>
-                                                                <input type="number" name="mci_sequence" class="form-control" value="<?= esc($item->mci_sequence) ?>" required>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Tanggungjawab</label>
-                                                                <select name="mci_responsibility" class="form-select" required>
-                                                                    <option value="Penyelaras Program" <?= ($item->mci_responsibility === 'Penyelaras Program') ? 'selected' : '' ?>>Penyelaras Program</option>
-                                                                    <option value="BPQ" <?= ($item->mci_responsibility === 'BPQ') ? 'selected' : '' ?>>BPQ</option>
-                                                                    <option value="Fakulti" <?= ($item->mci_responsibility === 'Fakulti') ? 'selected' : '' ?>>Fakulti</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="submit" class="btn btn-primary">
-                                                                <i class="fas fa-save me-2"></i>Simpan Perubahan
-                                                            </button>
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                                <i class="fas fa-times me-2"></i>Batal
-                                                            </button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php endforeach; ?>
-                                    </tbody>
+foreach ($items as $item): ?>
+<tr>
+    <td><span class="badge badge-primary"><?= esc($item->mci_sequence) ?></span></td>
+    <td><?= esc($item->mci_desc) ?></td>
+    <td><span class="badge badge-info"><?= esc($item->mci_responsibility ?? '-') ?></span></td>
+    <td>
+        <div class="action-buttons">
+            <!-- Reusable Edit Button -->
+            <button 
+                type="button"
+                class="btn btn-icon btn-edit editItemBtn"
+                data-bs-toggle="modal"
+                data-bs-target="#editItemModal"
+                data-id="<?= $item->mci_id ?>"
+                data-desc="<?= esc($item->mci_desc) ?>"
+                data-seq="<?= $item->mci_sequence ?>"
+                data-resp="<?= $item->mci_responsibility ?>"
+                data-action="<?= base_url('section/' . $section->mcs_section_char . '/edit-item/' . $item->mci_id) ?>"
+                title="Edit Item"
+            >
+                <i class="fas fa-edit"></i>
+            </button>
+
+            <!-- Delete Form -->
+            <form method="post" action="<?= base_url('section/' . $section->mcs_section_char . '/delete-item/' . $item->mci_id) ?>" style="display:inline;" onsubmit="return confirm('Padam item ini?');">
+                <?= csrf_field() ?>
+                <button type="submit" class="btn btn-icon btn-delete" data-bs-toggle="tooltip" title="Padam Item">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </form>
+        </div>
+    </td>
+</tr>
+<?php endforeach; ?>
+</tbody>
+
                                 </table>
                             </div>
                         </div>
@@ -460,6 +415,48 @@
             <?php endforeach; ?>
         </div>
 
+
+        <!-- Reusable Edit Modal -->
+<div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editItemForm" method="post">
+                <?= csrf_field() ?>
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Penerangan</label>
+                        <input type="text" name="mci_desc" id="modal_mci_desc" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Urutan</label>
+                        <input type="number" name="mci_sequence" id="modal_mci_sequence" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tanggungjawab</label>
+                        <select name="mci_responsibility" id="modal_mci_responsibility" class="form-select" required>
+                            <option value="Penyelaras Program">Penyelaras Program</option>
+                            <option value="BPQ">BPQ</option>
+                            <option value="Fakulti">Fakulti</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Simpan Perubahan
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
         <!-- Next Page Section -->
         <div class="text-center mt-5">
             <a href="<?= base_url('AdminSec.php') ?>" class="next-page-btn">
@@ -467,6 +464,32 @@
             </a>
         </div>
     </div>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const editButtons = document.querySelectorAll('.editItemBtn');
+    const form = document.getElementById('editItemForm');
+
+    editButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            const desc = this.getAttribute('data-desc');
+            const seq = this.getAttribute('data-seq');
+            const resp = this.getAttribute('data-resp');
+            const action = this.getAttribute('data-action');
+
+            // Fill modal inputs
+            document.getElementById('modal_mci_desc').value = desc;
+            document.getElementById('modal_mci_sequence').value = seq;
+            document.getElementById('modal_mci_responsibility').value = resp;
+
+            // Set form action dynamically
+            form.setAttribute('action', action);
+        });
+    });
+});
+</script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -492,5 +515,3 @@
             });
         });
     </script>
-</body>
-</html>

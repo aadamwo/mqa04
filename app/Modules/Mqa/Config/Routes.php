@@ -37,7 +37,7 @@ $routes->match(['get', 'post'], 'seca/edit-item/(:num)', '\Modules\Mqa\Controlle
 $routes->get('public', '\Modules\Mqa\Controllers\Pub04Controller::index');
 $routes->post('public/upload', '\Modules\Mqa\Controllers\ProgramController::upload');
 $routes->post('public/edit-responsibility/(:num)', '\Modules\Mqa\Controllers\ProgramController::editResponsibility/$1');
-$routes->post('public/edit-message/(:num)', '\Modules\Mqa\Controllers\ProgramController::editMessage/$1');
+$routes->post('public/edit-message', '\Modules\Mqa\Controllers\ProgramController::editMessage');
 
 // Program routes
 $routes->get('program', '\Modules\Mqa\Controllers\ProgramController::index');

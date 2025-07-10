@@ -1,16 +1,4 @@
 <main id="js-page-content" role="main" class="page-content">
-    <ol class="breadcrumb page-breadcrumb">
-        <li class="breadcrumb-item"><a href="javascript:void(0);">SmartAdmin</a></li>
-        <li class="breadcrumb-item">Category</li>
-        <li class="breadcrumb-item">Sub-category</li>
-        <li class="breadcrumb-item active">Page Title</li>
-        <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
-    </ol>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Evidence & Message Table</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -314,8 +302,7 @@
             }
         }
     </style>
-</head>
-<body>
+
     <div class="container container-main">
         <h4 class="header-title">ADMIN: EVIDENCE FILE & MESSAGE</h4>
 
@@ -324,6 +311,19 @@
                 <i class="fas fa-folder-open me-2"></i>SECTION <?= esc($section->mcs_section_char) ?>: <?= esc($section->mcs_desc) ?>
             </h5>
             
+            <!-- Programme Code Dropdown -->
+            <form method="get" class="mb-3">
+                <input type="hidden" name="section" value="<?= esc($section->mcs_section_char) ?>">
+                <label for="programme_code" class="form-label">Select Programme Code:</label>
+                <select name="programme_code" id="programme_code" class="form-select" onchange="this.form.submit()">
+                    <?php foreach ($programmeCodes as $code): ?>
+                        <option value="<?= esc($code) ?>" <?= $selectedProgrammeCode == $code ? 'selected' : '' ?>>
+                            <?= esc($code) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </form>
+
             <div class="d-flex justify-content-end mb-3">
                 <!-- Add Item Button -->
                 <button class="btn btn-icon btn-add" data-bs-toggle="modal" data-bs-target="#addItemModal<?= esc($section->mcs_section_char) ?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Add Item">
@@ -344,9 +344,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($section->items as $index => $item): ?>
+                        <?php
+                        $rowNum = 1;
+                        foreach ($section->items as $item):
+                            if ($item->mcd_programme_code !== $selectedProgrammeCode) continue;
+                        ?>
                             <tr>
-                                <td><?= $index + 1 ?>.</td>
+                                <td><?= $rowNum++ ?>.</td>
                                 <td><?= esc($item->mcd_programme_code ?? '-') ?></td>
                                 <td><?= esc($item->mci_desc) ?></td>
                                 <td>

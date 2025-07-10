@@ -229,6 +229,23 @@ public function seca() //main
             ->first();
 
         $sections = [];
+        $programmeCodes = [];
+
+        // 1. Get all programme codes from the main program table (AdminProg)
+        $programModel = new \App\Models\ProgramModel();
+        $allProgrammes = $programModel
+            ->join('mqa04_compliance_documents', 'program.p_mcd_id = mqa04_compliance_documents.mcd_id', 'left')
+            ->select('mqa04_compliance_documents.mcd_programme_code')
+            ->where('mqa04_compliance_documents.mcd_programme_code IS NOT NULL')
+            ->groupBy('mqa04_compliance_documents.mcd_programme_code')
+            ->findAll();
+        foreach ($allProgrammes as $prog) {
+            if (!empty($prog->mcd_programme_code)) {
+                $programmeCodes[] = $prog->mcd_programme_code;
+            }
+        }
+
+        // 2. Get all programme codes from evidence/documents (as before)
         if ($section) {
             $items = $this->MqaComItemModel
                 ->select('mqa04_compliance_item.*, 
@@ -240,15 +257,30 @@ public function seca() //main
                           mqa04_compliance_documents.mcd_message')
                 ->join('mqa04_compliance_documents', 'mqa04_compliance_documents.mcd_mci_id = mqa04_compliance_item.mci_id', 'left')
                 ->where('mqa04_compliance_item.mci_mcs_id', $section->mcs_id)
+                ->orderBy('mqa04_compliance_documents.mcd_programme_code', 'asc')
                 ->orderBy('mqa04_compliance_item.mci_sequence', 'asc')
                 ->findAll();
+
+            foreach ($items as $item) {
+                if (!empty($item->mcd_programme_code)) {
+                    $programmeCodes[] = $item->mcd_programme_code;
+                }
+            }
 
             $section->items = $items;
             $sections[] = $section;
         }
 
+        // 3. Remove duplicates and sort
+        $programmeCodes = array_unique($programmeCodes);
+        sort($programmeCodes);
+
+        $selectedProgrammeCode = $this->request->getGet('programme_code') ?? ($programmeCodes[0] ?? '');
+
         $data = [
             'sections' => $sections,
+            'programmeCodes' => $programmeCodes,
+            'selectedProgrammeCode' => $selectedProgrammeCode,
         ];
 
         return $this->render_admin('AdminSec', $data);
@@ -256,13 +288,30 @@ public function seca() //main
 
     public function adminSecB()
     {
-        $sectionChar = $this->request->getGet('section') ?? 'B'; // Default to 'B', or get from URL
+        $sectionChar = $this->request->getGet('section') ?? 'B';
 
         $section = $this->MqaComSectionModel
             ->where('mcs_section_char', strtoupper($sectionChar))
             ->first();
 
         $sections = [];
+        $programmeCodes = [];
+
+        // 1. Get all programme codes from the main program table (AdminProg)
+        $programModel = new \App\Models\ProgramModel();
+        $allProgrammes = $programModel
+            ->join('mqa04_compliance_documents', 'program.p_mcd_id = mqa04_compliance_documents.mcd_id', 'left')
+            ->select('mqa04_compliance_documents.mcd_programme_code')
+            ->where('mqa04_compliance_documents.mcd_programme_code IS NOT NULL')
+            ->groupBy('mqa04_compliance_documents.mcd_programme_code')
+            ->findAll();
+        foreach ($allProgrammes as $prog) {
+            if (!empty($prog->mcd_programme_code)) {
+                $programmeCodes[] = $prog->mcd_programme_code;
+            }
+        }
+
+        // 2. Get all programme codes from evidence/documents (as before)
         if ($section) {
             $items = $this->MqaComItemModel
                 ->select('mqa04_compliance_item.*, 
@@ -274,15 +323,30 @@ public function seca() //main
                           mqa04_compliance_documents.mcd_message')
                 ->join('mqa04_compliance_documents', 'mqa04_compliance_documents.mcd_mci_id = mqa04_compliance_item.mci_id', 'left')
                 ->where('mqa04_compliance_item.mci_mcs_id', $section->mcs_id)
+                ->orderBy('mqa04_compliance_documents.mcd_programme_code', 'asc')
                 ->orderBy('mqa04_compliance_item.mci_sequence', 'asc')
                 ->findAll();
+
+            foreach ($items as $item) {
+                if (!empty($item->mcd_programme_code)) {
+                    $programmeCodes[] = $item->mcd_programme_code;
+                }
+            }
 
             $section->items = $items;
             $sections[] = $section;
         }
 
+        // 3. Remove duplicates and sort
+        $programmeCodes = array_unique($programmeCodes);
+        sort($programmeCodes);
+
+        $selectedProgrammeCode = $this->request->getGet('programme_code') ?? ($programmeCodes[0] ?? '');
+
         $data = [
             'sections' => $sections,
+            'programmeCodes' => $programmeCodes,
+            'selectedProgrammeCode' => $selectedProgrammeCode,
         ];
 
         return $this->render_admin('AdminSecB', $data);
@@ -290,13 +354,30 @@ public function seca() //main
 
     public function adminSecC()
     {
-        $sectionChar = $this->request->getGet('section') ?? 'C'; // Default to 'C', or get from URL
+        $sectionChar = $this->request->getGet('section') ?? 'C';
 
         $section = $this->MqaComSectionModel
             ->where('mcs_section_char', strtoupper($sectionChar))
             ->first();
 
         $sections = [];
+        $programmeCodes = [];
+
+        // 1. Get all programme codes from the main program table (AdminProg)
+        $programModel = new \App\Models\ProgramModel();
+        $allProgrammes = $programModel
+            ->join('mqa04_compliance_documents', 'program.p_mcd_id = mqa04_compliance_documents.mcd_id', 'left')
+            ->select('mqa04_compliance_documents.mcd_programme_code')
+            ->where('mqa04_compliance_documents.mcd_programme_code IS NOT NULL')
+            ->groupBy('mqa04_compliance_documents.mcd_programme_code')
+            ->findAll();
+        foreach ($allProgrammes as $prog) {
+            if (!empty($prog->mcd_programme_code)) {
+                $programmeCodes[] = $prog->mcd_programme_code;
+            }
+        }
+
+        // 2. Get all programme codes from evidence/documents (as before)
         if ($section) {
             $items = $this->MqaComItemModel
                 ->select('mqa04_compliance_item.*, 
@@ -308,15 +389,30 @@ public function seca() //main
                           mqa04_compliance_documents.mcd_message')
                 ->join('mqa04_compliance_documents', 'mqa04_compliance_documents.mcd_mci_id = mqa04_compliance_item.mci_id', 'left')
                 ->where('mqa04_compliance_item.mci_mcs_id', $section->mcs_id)
+                ->orderBy('mqa04_compliance_documents.mcd_programme_code', 'asc')
                 ->orderBy('mqa04_compliance_item.mci_sequence', 'asc')
                 ->findAll();
+
+            foreach ($items as $item) {
+                if (!empty($item->mcd_programme_code)) {
+                    $programmeCodes[] = $item->mcd_programme_code;
+                }
+            }
 
             $section->items = $items;
             $sections[] = $section;
         }
 
+        // 3. Remove duplicates and sort
+        $programmeCodes = array_unique($programmeCodes);
+        sort($programmeCodes);
+
+        $selectedProgrammeCode = $this->request->getGet('programme_code') ?? ($programmeCodes[0] ?? '');
+
         $data = [
             'sections' => $sections,
+            'programmeCodes' => $programmeCodes,
+            'selectedProgrammeCode' => $selectedProgrammeCode,
         ];
 
         return $this->render_admin('AdminSecC', $data);
@@ -665,6 +761,7 @@ public function seca() //main
     }
     public function deleteProgrammeCodeFile($itemId, $programmeCode)
     {
+        // Only delete the document for this item and programme code
         $this->MqaComDocModel
             ->where('mcd_mci_id', $itemId)
             ->where('mcd_programme_code', $programmeCode)

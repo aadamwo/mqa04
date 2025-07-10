@@ -1,12 +1,4 @@
-<?php
-// filepath: c:\laragon\www\mpquaapp\app\Modules\Mqa\Views\PubA.php
-?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
     <title>Accreditation Compliance Documents (Public)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -357,9 +349,7 @@
             }
         }
     </style>
-</head>
 
-<body>
 <main id="js-page-content" role="main" class="page-content">
     <div class="container">
         <nav aria-label="breadcrumb">
@@ -559,5 +549,3 @@
         }
     });
 </script>
-</body>
-</html>

@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html>
+
 <head>
     <title>Admin Evidence & Message Table</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -50,13 +49,6 @@
 </head>
 <body>
 <main id="js-page-content" role="main" class="page-content">
-    <ol class="breadcrumb page-breadcrumb">
-        <li class="breadcrumb-item"><a href="javascript:void(0);">SmartAdmin</a></li>
-        <li class="breadcrumb-item">Category</li>
-        <li class="breadcrumb-item">Sub-category</li>
-        <li class="breadcrumb-item active">Page Title</li>
-        <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
-    </ol>
     <div class="container mt-5">
         <h4 class="text-center mb-4">ADMIN: EVIDENCE FILE & MESSAGE</h4>
 
@@ -65,6 +57,20 @@
             <button class="btn btn-icon btn-add mb-3" data-bs-toggle="modal" data-bs-target="#addItemModal<?= esc($section->mcs_section_char) ?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Add Item">
                 <i class="fas fa-plus"></i>
             </button>
+
+            <!-- Add this above the table -->
+            <form method="get" class="mb-3">
+                <input type="hidden" name="section" value="<?= esc($section->mcs_section_char) ?>">
+                <label for="programme_code" class="form-label">Select Programme Code:</label>
+                <select name="programme_code" id="programme_code" class="form-select" onchange="this.form.submit()">
+                    <?php foreach ($programmeCodes as $code): ?>
+                        <option value="<?= esc($code) ?>" <?= $selectedProgrammeCode == $code ? 'selected' : '' ?>>
+                            <?= esc($code) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </form>
+
             <table class="table table-bordered">
                 <thead class="table-secondary">
                 <tr>
@@ -77,9 +83,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($section->items as $index => $item): ?>
+                <?php
+                $rowNum = 1;
+                foreach ($section->items as $item):
+                    if ($item->mcd_programme_code !== $selectedProgrammeCode) continue;
+                ?>
                     <tr>
-                        <td><?= $index + 1 ?>.</td>
+                        <td><?= $rowNum++ ?>.</td>
                         <td><?= esc($item->mcd_programme_code ?? '-') ?></td>
                         <td><?= esc($item->mci_desc) ?></td>
                         <td>

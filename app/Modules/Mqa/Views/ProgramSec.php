@@ -1,10 +1,4 @@
-<?php
-// filepath: c:\laragon\www\mpquaapp\app\Modules\Mqa\Views\ProgramSec.php
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
     <title>Program Profiling Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
@@ -293,5 +287,3 @@
         });
     });
 </script>
-</body>
-</html>

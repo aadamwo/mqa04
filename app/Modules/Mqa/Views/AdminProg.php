@@ -1,11 +1,4 @@
-<?php
-// filepath: c:\laragon\www\mpquaapp\app\Modules\Mqa\Views\AdminProg.php
-?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
     <title>Accreditation Compliance Documents (Admin)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -20,16 +13,9 @@
             display: none !important;
         }
     </style>
-</head>
-<body>
+
 <main id="js-page-content" role="main" class="page-content">
-    <ol class="breadcrumb page-breadcrumb">
-        <li class="breadcrumb-item"><a href="javascript:void(0);">SmartAdmin</a></li>
-        <li class="breadcrumb-item">Category</li>
-        <li class="breadcrumb-item">Sub-category</li>
-        <li class="breadcrumb-item active">Page Title</li>
-        <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
-    </ol>
+    
     <div class="container mt-5">
         <!-- Back Button -->
         <a href="<?= base_url('AdminSec.php') ?>" class="btn btn-secondary mb-3">&larr; Back to Admin Section</a>
@@ -542,6 +528,3 @@ $(document).ready(function() {
     });
 });
 </script>
-
-</body>
-</html>
