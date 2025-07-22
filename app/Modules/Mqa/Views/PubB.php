@@ -1,5 +1,4 @@
-
-    <title>Accreditation Compliance Documents (Public)</title>
+<title>Accreditation Compliance Documents (Public)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -319,16 +318,7 @@
 
 <main id="js-page-content" role="main" class="page-content">
     <div class="container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="javascript:void(0);"><i class="fas fa-home"></i> SmartAdmin</a></li>
-                <li class="breadcrumb-item"><a href="#"><i class="fas fa-folder"></i> Category</a></li>
-                <li class="breadcrumb-item"><a href="#"><i class="fas fa-folder-open"></i> Sub-category</a></li>
-                <li class="breadcrumb-item active"><i class="fas fa-file-alt"></i> Accreditation Docs</li>
-                <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
-            </ol>
-        </nav>
-
+        
         <div class="header-card">
             <div class="d-flex justify-content-between align-items-center flex-wrap">
                 <div>
@@ -337,7 +327,7 @@
                 </div>
                 <div class="d-flex gap-2 mt-2 mt-md-0">
                     <a href="<?= base_url('listprog/' . esc($program_slug)) ?>" class="btn btn-light">
-                        <i class="fas fa-arrow-left"></i> Back
+                        <i class="fas fa-arrow-left"></i> Back to Program Details
                     </a>
                     <a href="<?= base_url('PubA.php?programme_code=' . urlencode($programme_code) . '&section=A') ?>" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Section A
@@ -391,9 +381,13 @@
                                         </form>
                                     <?php else: ?>
                                         <div class="mb-2">
-                                            <a href="<?= base_url($item->mcd_file) ?>" target="_blank" class="file-link">
-                                                <i class="fas fa-file-pdf"></i> <?= esc($item->mcd_original_file_name) ?>
-                                            </a>
+                                            <?php if (!empty($item->mcd_file)): ?>
+                                                <a href="<?= base_url($item->mcd_file) ?>" target="_blank" class="file-link">
+                                                    <i class="fas fa-file-pdf"></i> <?= esc($item->mcd_original_file_name) ?>
+                                                </a>
+                                            <?php else: ?>
+                                                <span class="text-muted">No file</span>
+                                            <?php endif; ?>
                                         </div>
                                         <form method="post" enctype="multipart/form-data" action="<?= base_url('public/upload') ?>">
                                             <?= csrf_field() ?>
@@ -401,7 +395,7 @@
                                             <input type="hidden" name="programme_code" value="<?= esc($programme_code) ?>">
                                             <div class="d-flex gap-2 align-items-center">
                                                 <input type="file" name="mcd_file" class="form-control form-control-sm" required>
-                                                <button type="submit" class="btn btn-sm btn-primary">
+                                                <button type="button" class="btn btn-sm btn-primary replace-btn" data-mci-id="<?= esc($item->mci_id) ?>" data-programme-code="<?= esc($programme_code) ?>" data-bs-toggle="modal" data-bs-target="#replaceModal">
                                                     <i class="fas fa-sync-alt"></i> Replace
                                                 </button>
                                             </div>
@@ -435,10 +429,29 @@
             <?= csrf_field() ?>
             <input type="hidden" name="mci_id" id="modalMciId">
             <input type="hidden" name="programme_code" id="modalProgrammeCode">
-            <textarea name="mcd_message" class="form-control message-textarea" id="messageTextarea" placeholder="Type your message here..."></textarea>
+            <textarea name="mcd_message" class="form-control message-textarea" id="messageTextarea" placeholder="Type your message here..." required></textarea>
             <button type="submit" class="btn btn-primary">Send Message</button>
         </form>
     </div>
+</div>
+
+<!-- Replace Confirmation Modal -->
+<div class="modal fade" id="replaceModal" tabindex="-1" aria-labelledby="replaceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title" id="replaceModalLabel"><i class="fas fa-exclamation-triangle"></i> Confirm Replace</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Sure to replace it?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="confirmReplaceModalBtn">Yes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -457,11 +470,10 @@
 
     // Message Modal Functions
     function openMessageModal(mciId, programmeCode, currentMessage) {
-        const modal = document.getElementById('messageModal');
         document.getElementById('modalMciId').value = mciId;
         document.getElementById('modalProgrammeCode').value = programmeCode;
         document.getElementById('messageTextarea').value = currentMessage || '';
-        modal.style.display = 'flex';
+        document.getElementById('messageModal').style.display = 'flex';
     }
 
     function closeMessageModal() {
@@ -471,34 +483,56 @@
     // Handle form submission
     document.getElementById('messageForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        
         const formData = new FormData(this);
-        
-        fetch('/public/edit-message', {
+
+        fetch('<?= base_url('public/edit-message') ?>', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 alert('Message sent successfully!');
                 closeMessageModal();
-                // You might want to refresh the page or update the UI here
+                location.reload();
             } else {
                 alert('Error sending message: ' + (data.message || 'Unknown error'));
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             alert('An error occurred while sending the message.');
         });
     });
 
-    // Close modal when clicking outside
-    window.addEventListener('click', function(event) {
-        const modal = document.getElementById('messageModal');
-        if (event.target === modal) {
-            closeMessageModal();
-        }
+    // Replace file confirmation modal logic
+    let pendingReplaceForm = null;
+    const replaceModalEl = document.getElementById('replaceModal');
+    let replaceModal = null;
+    if (replaceModalEl) {
+        replaceModal = new bootstrap.Modal(replaceModalEl);
+    }
+
+    document.querySelectorAll('.replace-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            pendingReplaceForm = btn.closest('form');
+            if (replaceModal) {
+                replaceModal.show();
+            }
+        });
     });
+
+    document.getElementById('confirmReplaceModalBtn').onclick = function() {
+        if (pendingReplaceForm) {
+            pendingReplaceForm.submit();
+            pendingReplaceForm = null;
+        }
+        if (replaceModal) {
+            replaceModal.hide();
+        }
+    };
+    // The "No" button and close (X) button work automatically via data-bs-dismiss="modal"
 </script>

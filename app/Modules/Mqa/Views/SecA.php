@@ -1,4 +1,3 @@
-
 <main id="js-page-content" role="main" class="page-content">
     <title>Dokumen Pematuhan Akreditasi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -95,15 +94,25 @@
             background-color: var(--secondary-color);
         }
 
+        .nav-tabs .nav-link {
+            background-color: #f9fafc !important;
+            color: #2e59d9 !important;
+            border: 1px solid #d1d3e2 !important;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(78, 115, 223, 0.08);
+            transition: background 0.2s, color 0.2s;
+        }
+
         .nav-tabs .nav-link:hover {
             color: var(--primary-color);
             background-color: rgba(78, 115, 223, 0.1);
         }
 
         .nav-tabs .nav-link.active {
-            background-color: var(--primary-color);
-            color: white;
-            box-shadow: var(--shadow-sm);
+            background-color: #4e73df !important;
+            color: #fff !important;
+            border-color: #4e73df #4e73df #fff !important;
+            box-shadow: 0 4px 16px rgba(78, 115, 223, 0.15);
         }
 
         .btn-icon {
@@ -124,36 +133,43 @@
         }
 
         .btn-add {
-            background-color: var(--success-color);
-            color: white;
+            background-color: #2e59d9 !important;   /* Bright green */
+            color: #fff !important;
+            border: none;
+            box-shadow: 0 2px 8px rgba(56, 9, 242, 0.15);
+            font-weight: 700;
+        }
+        .btn-add:hover, .btn-add:focus {
+            background-color: #2e59d9 !important;
+            color: #fff !important;
+            box-shadow: 0 4px 16px rgba(28, 200, 138, 0.25);
         }
 
-        .btn-add:hover {
-            background-color: #17a673;
-            color: white;
-            transform: translateY(-2px);
-        }
 
         .btn-edit {
-            background-color: var(--warning-color);
-            color: #2c3e50;
+            background-color: #f1b00cff !important;   /* Bright yellow */
+            color: #212529 !important;
+            border: none;
+            box-shadow: 0 2px 8px rgba(246, 194, 62, 0.15);
+            font-weight: 700;
         }
-
-        .btn-edit:hover {
-            background-color: #f4b619;
-            color: #2c3e50;
-            transform: translateY(-2px);
+        .btn-edit:hover, .btn-edit:focus {
+            background-color: #c38e06ff !important;
+            color: #fff !important;
+            box-shadow: 0 4px 16px rgba(246, 194, 62, 0.25);
         }
 
         .btn-delete {
-            background-color: var(--danger-color);
-            color: white;
+            background-color: #e74a3b !important;   /* Bright red */
+            color: #fff !important;
+            border: none;
+            box-shadow: 0 2px 8px rgba(231, 74, 59, 0.15);
+            font-weight: 700;
         }
-
-        .btn-delete:hover {
-            background-color: #d62c1a;
-            color: white;
-            transform: translateY(-2px);
+        .btn-delete:hover, .btn-delete:focus {
+            background-color: #be2617 !important;
+            color: #fff !important;
+            box-shadow: 0 4px 16px rgba(231, 74, 59, 0.25);
         }
 
         .action-buttons {
@@ -263,39 +279,10 @@
         $sections = $sectionModel->orderBy('mcs_section_char', 'asc')->findAll();
         ?>
 
-        <!-- Add Section Form -->
-        <div class="card">
-            <div class="card-header">
-                <i class="fas fa-plus-circle me-2"></i>Tambah Bahagian Baru
-            </div>
-            <div class="card-body">
-                <form method="post" action="<?= base_url('section/add') ?>" class="row g-3">
-                    <?= csrf_field() ?>
-                    <div class="col-md-2">
-                        <label class="form-label">Bahagian</label>
-                        <input type="text" name="mcs_section_char" class="form-control" placeholder="A-Z" maxlength="1" required>
-                    </div>
-                    <div class="col-md-8">
-                        <label class="form-label">Penerangan Bahagian</label>
-                        <input type="text" name="mcs_desc" class="form-control" placeholder="Masukkan penerangan bahagian" required>
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-icon btn-add w-100" data-bs-toggle="tooltip" data-bs-placement="top" title="Tambah Bahagian">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <?php if (session()->getFlashdata('success')): ?>
-            <div class="alert alert-success">
-                <i class="fas fa-check-circle me-2"></i><?= session()->getFlashdata('success') ?>
-            </div>
-        <?php endif; ?>
+   
 
         <!-- Section Tabs -->
-        <ul class="nav nav-tabs justify-content-center" id="sectionTabs" role="tablist">
+        <ul class="nav nav-tabs justify-content-start" id="sectionTabs" role="tablist">
             <?php foreach ($sections as $i => $section): ?>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link <?= $i === 0 ? 'active' : '' ?>" id="tab-<?= $section->mcs_section_char ?>" data-bs-toggle="tab" data-bs-target="#section-<?= $section->mcs_section_char ?>" type="button" role="tab" aria-controls="section-<?= $section->mcs_section_char ?>" aria-selected="<?= $i === 0 ? 'true' : 'false' ?>">
@@ -314,12 +301,19 @@
                                 <i class="fas fa-clipboard-list me-2"></i>
                                 <strong>Section <?= esc($section->mcs_section_char) ?>:</strong> <?= esc($section->mcs_desc) ?>
                             </div>
-                            <form method="post" action="<?= base_url('section/' . $section->mcs_section_char . '/delete') ?>" onsubmit="return confirm('Padam bahagian ini dan semua itemnya?');" style="display:inline;">
-                                <?= csrf_field() ?>
-                                <button type="submit" class="btn btn-icon btn-delete" data-bs-toggle="tooltip" data-bs-placement="top" title="Padam Bahagian">
-                                    <i class="fas fa-trash"></i>
+                            <div class="d-flex align-items-center gap-2">
+                                <!-- Trash Icon (Delete Section) -->
+                                <form method="post" action="<?= base_url('section/' . $section->mcs_section_char . '/delete') ?>" onsubmit="return confirm('Padam bahagian ini dan semua itemnya?');" style="display:inline;">
+                                    <?= csrf_field() ?>
+                                    <button type="submit" class="btn btn-icon btn-delete" data-bs-toggle="tooltip" data-bs-placement="top" title="Padam Bahagian">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                                <!-- Add Section Icon (Modal Trigger) -->
+                                <button type="button" class="btn btn-icon btn-add" data-bs-toggle="modal" data-bs-target="#addSectionModal" data-section="<?= esc($section->mcs_section_char) ?>" title="Tambah Bahagian Baru">
+                                    <i class="fas fa-plus"></i>
                                 </button>
-                            </form>
+                            </div>
                         </div>
                         <div class="card-body">
                             <!-- Add Item Form -->
@@ -457,10 +451,43 @@ foreach ($items as $item): ?>
     </div>
 </div>
 
+        <!-- Add Section Modal -->
+<div class="modal fade" id="addSectionModal" tabindex="-1" aria-labelledby="addSectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="<?= base_url('section/add') ?>">
+                <?= csrf_field() ?>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSectionModalLabel"><i class="fas fa-plus-circle me-2"></i>Tambah Bahagian Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Bahagian</label>
+                        <input type="text" name="mcs_section_char" class="form-control" placeholder="A-Z" maxlength="1" required>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label">Penerangan Bahagian</label>
+                        <input type="text" name="mcs_desc" class="form-control" placeholder="Masukkan penerangan bahagian" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Tambah Bahagian
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
         <!-- Next Page Section -->
         <div class="text-center mt-5">
             <a href="<?= base_url('AdminSec.php') ?>" class="next-page-btn">
-                <i class="fas fa-arrow-right me-2"></i>Halaman Seterusnya
+                <i class="fas fa-arrow-right me-2"></i>Next Page
             </a>
         </div>
     </div>

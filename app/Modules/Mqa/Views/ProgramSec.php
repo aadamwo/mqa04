@@ -184,16 +184,7 @@
 <main id="js-page-content" role="main" class="page-content py-4">
     <div class="container">
 
-        <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="javascript:void(0);"><i class="bi bi-house-door-fill"></i> SmartAdmin</a></li>
-                <li class="breadcrumb-item">Category</li>
-                <li class="breadcrumb-item">Sub-category</li>
-                <li class="breadcrumb-item active" aria-current="page">Program Profiling</li>
-                <li class="ms-auto d-none d-sm-block"><span class="js-get-date text-muted"></span></li>
-            </ol>
-        </nav>
+       
 
         <!-- Page Header -->
         <div class="page-header text-center">

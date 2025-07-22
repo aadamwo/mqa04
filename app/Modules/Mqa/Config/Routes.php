@@ -17,6 +17,7 @@ $routes->post('section/(:alpha)/edit-item/(:num)', '\Modules\Mqa\Controllers\Mqa
 $routes->post('section/(:alpha)/delete-item/(:num)', '\Modules\Mqa\Controllers\Mqa04Controller::deleteItem2/$1/$2');
 $routes->post('section/(:alpha)/delete-file/(:num)/(:any)', '\Modules\Mqa\Controllers\Mqa04Controller::deleteProgrammeCodeFile/$2/$3');
 $routes->post('section/(:alpha)/delete', '\Modules\Mqa\Controllers\Mqa04Controller::deleteSection/$1');
+$routes->post('section/(:alpha)/clear-file-message/(:num)/(:any)', '\Modules\Mqa\Controllers\Mqa04Controller::clearFileMessage/$1/$2/$3');
 
 // Legacy/Specific Section A/B routes (if still needed)
 $routes->get('seca', '\Modules\Mqa\Controllers\Mqa04Controller::seca');
@@ -44,7 +45,7 @@ $routes->get('program', '\Modules\Mqa\Controllers\ProgramController::index');
 $routes->get('PubA.php', '\Modules\Mqa\Controllers\ProgramController::Pub04');
 $routes->post('program/upload', '\Modules\Mqa\Controllers\ProgramController::upload');
 $routes->post('program/edit-responsibility/(:num)', '\Modules\Mqa\Controllers\ProgramController::editResponsibility/$1');
-$routes->post('program/edit-message/(:num)', '\Modules\Mqa\Controllers\ProgramController::editMessage/$1');
+// $routes->post('program/edit-message/(:num)', '\Modules\Mqa\Controllers\ProgramController::editMessage/$1');
 $routes->post('program/edit/(:num)', '\Modules\Mqa\Controllers\Mqa04Controller::editProgram/$1');
 $routes->post('program/add', '\Modules\Mqa\Controllers\Mqa04Controller::addProgram');
 $routes->post('program/delete/(:num)', '\Modules\Mqa\Controllers\Mqa04Controller::deleteProgram/$1');

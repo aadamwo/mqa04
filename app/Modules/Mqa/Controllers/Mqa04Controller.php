@@ -808,6 +808,26 @@ public function seca() //main
         }
         return $slug;
     }
+public function clearFileMessage($sectionChar, $itemId, $programmeCode)
+{
+    $docModel = new \App\Models\MqaComDocModel();
+    // Find the document for this item and programme code
+    $doc = $docModel
+        ->where('mcd_mci_id', $itemId)
+        ->where('mcd_programme_code', $programmeCode)
+        ->first();
+
+    if ($doc) {
+        $docModel->update($doc['mcd_id'], [
+            'mcd_file' => null,
+            'mcd_original_file_name' => null,
+            'mcd_new_file_name' => null,
+            'mcd_message' => null
+        ]);
+    }
+
+    return redirect()->back()->with('success', 'Evidence file and message removed for this item.');
+}
 }
 
 

@@ -304,7 +304,7 @@
     </style>
 
     <div class="container container-main">
-        <h4 class="header-title">ADMIN: EVIDENCE FILE & MESSAGE</h4>
+        <h4 class="header-title">ADMIN: SECTION A </h4>
 
         <?php foreach ($sections as $section): ?>
             <h5 class="section-title">
@@ -354,7 +354,7 @@
                                 <td><?= esc($item->mcd_programme_code ?? '-') ?></td>
                                 <td><?= esc($item->mci_desc) ?></td>
                                 <td>
-                                    <?php if (!empty($item->mcd_id)): ?>
+                                    <?php if (!empty($item->mcd_file)): ?>
                                         <a href="<?= base_url($item->mcd_file) ?>" target="_blank" class="file-link">
                                             <i class="fas fa-file me-2"></i><?= esc($item->mcd_original_file_name) ?>
                                         </a>
@@ -362,7 +362,9 @@
                                         <span class="text-muted">No file</span>
                                     <?php endif; ?>
                                 </td>
-                                <td><?= esc($item->mcd_message ?? '') ?></td>
+                                <td>
+                                    <?= esc($item->mcd_message ?? '') ?>
+                                </td>
                                 <td>
                                     <div class="action-buttons">
                                         <!-- Edit Button -->
@@ -370,9 +372,9 @@
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <!-- Delete Button -->
-                                        <form method="post" action="<?= base_url('section/' . $section->mcs_section_char . '/delete-item/' . $item->mci_id) ?>" style="display:inline;" onsubmit="return confirm('Delete this item and all related files?');">
+                                        <form method="post" action="<?= base_url('section/' . $section->mcs_section_char . '/clear-file-message/' . $item->mci_id . '/' . $item->mcd_programme_code) ?>" style="display:inline;" onsubmit="return confirm('Remove evidence file and message for this item?');">
                                             <?= csrf_field() ?>
-                                            <button type="submit" class="btn btn-icon btn-delete" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Item">
+                                            <button type="submit" class="btn btn-icon btn-delete" data-bs-toggle="tooltip" data-bs-placement="top" title="Remove File & Message">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>

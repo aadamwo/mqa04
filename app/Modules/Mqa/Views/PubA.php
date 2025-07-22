@@ -1,5 +1,4 @@
-
-    <title>Accreditation Compliance Documents (Public)</title>
+<title>Accreditation Compliance Documents (Public)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -352,15 +351,7 @@
 
 <main id="js-page-content" role="main" class="page-content">
     <div class="container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="javascript:void(0);"><i class="fas fa-home"></i> SmartAdmin</a></li>
-                <li class="breadcrumb-item"><a href="#"><i class="fas fa-folder"></i> Category</a></li>
-                <li class="breadcrumb-item"><a href="#"><i class="fas fa-folder-open"></i> Sub-category</a></li>
-                <li class="breadcrumb-item active"><i class="fas fa-file-alt"></i> Accreditation Docs</li>
-                <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
-            </ol>
-        </nav>
+        
 
         <div class="header-card">
             <div class="d-flex justify-content-between align-items-center flex-wrap">
@@ -370,7 +361,7 @@
                 </div>
                 <div class="d-flex gap-2 mt-2 mt-md-0">
                     <a href="<?= base_url('listprog/' . esc($program_slug)) ?>" class="btn btn-light">
-                        <i class="fas fa-arrow-left"></i> Back
+                        <i class="fas fa-arrow-left"></i>Programme Details
                     </a>
                     <a href="<?= base_url('PubB.php?programme_code=' . urlencode($programme_code) . '&section=B') ?>" class="btn btn-accent">
                         <i class="fas fa-arrow-right"></i> Section B
@@ -421,9 +412,13 @@
                                         </form>
                                     <?php else: ?>
                                         <div class="mb-2">
-                                            <a href="<?= base_url($item->mcd_file) ?>" target="_blank" class="file-link">
-                                                <i class="fas fa-file-pdf"></i> <?= esc($item->mcd_original_file_name) ?>
-                                            </a>
+                                            <?php if (!empty($item->mcd_file)): ?>
+                                                <a href="<?= base_url($item->mcd_file) ?>" target="_blank" class="file-link">
+                                                    <i class="fas fa-file-pdf"></i> <?= esc($item->mcd_original_file_name) ?>
+                                                </a>
+                                            <?php else: ?>
+                                                <span class="text-muted">No file uploaded</span>
+                                            <?php endif; ?>
                                         </div>
                                         <form method="post" enctype="multipart/form-data" action="<?= base_url('public/upload') ?>">
                                             <?= csrf_field() ?>
@@ -461,14 +456,13 @@
             <div class="message-modal-title">Send Message</div>
             <button class="message-modal-close" onclick="closeMessageModal()">&times;</button>
         </div>
-        <form id="messageForm" method="post">
+        <form id="messageForm" method="post" autocomplete="off">
             <?= csrf_field() ?>
             <input type="hidden" name="mci_id" id="modalMciId">
             <input type="hidden" name="programme_code" id="modalProgrammeCode">
-            <textarea name="mcd_message" class="form-control message-textarea" id="messageTextarea" placeholder="Type your message here..."></textarea>
+            <textarea name="mcd_message" class="form-control message-textarea" id="messageTextarea" placeholder="Type your message here..." required></textarea>
             <button type="submit" class="btn btn-primary">Send Message</button>
         </form>
-        
     </div>
 </div>
 
@@ -488,64 +482,39 @@
 
     // Message Modal Functions
     function openMessageModal(mciId, programmeCode, currentMessage) {
-        const modal = document.getElementById('messageModal');
         document.getElementById('modalMciId').value = mciId;
         document.getElementById('modalProgrammeCode').value = programmeCode;
         document.getElementById('messageTextarea').value = currentMessage || '';
-        
-        
-        
-        modal.style.display = 'flex';
+        document.getElementById('messageModal').style.display = 'flex';
     }
 
     function closeMessageModal() {
         document.getElementById('messageModal').style.display = 'none';
     }
 
-   
-        // For now, we'll just show a placeholder
-        document.getElementById('messageHistory').innerHTML = `
-            <h6>Message History</h6>
-            <p>Loading message history...</p>
-        `;
-    
-
-    // Handle form submission
     document.getElementById('messageForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        
         const formData = new FormData(this);
-        
-        fetch('/public/edit-message', {
+
+        fetch(<?= json_encode(base_url('public/edit-message')) ?>, {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 alert('Message sent successfully!');
-                // Reload the message history
-                loadMessageHistory(
-                    document.getElementById('modalMciId').value,
-                    document.getElementById('modalProgrammeCode').value
-                );
-                // Clear the textarea
-                document.getElementById('messageTextarea').value = '';
+                closeMessageModal();
+                location.reload();
             } else {
                 alert('Error sending message: ' + (data.message || 'Unknown error'));
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             alert('An error occurred while sending the message.');
         });
-    });
-
-    // Close modal when clicking outside
-    window.addEventListener('click', function(event) {
-        const modal = document.getElementById('messageModal');
-        if (event.target === modal) {
-            closeMessageModal();
-        }
     });
 </script>

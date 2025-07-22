@@ -144,19 +144,54 @@ class ProgramController extends BaseController
         return redirect()->back()->with('success', 'Responsibility updated successfully.');
     }
 
-    public function editMessage($id)
+    public function editMessage()
     {
+        if (!$this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Invalid request.',
+                'csrfHash' => csrf_hash()
+            ]);
+        }
+
+        $mci_id = $this->request->getPost('mci_id');
         $programme_code = $this->request->getPost('programme_code');
         $message = $this->request->getPost('mcd_message');
-        // Find the document by item id and programme code
+
+        if (!$mci_id || !$programme_code) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Missing required data.',
+                'csrfHash' => csrf_hash()
+            ]);
+        }
+
+        // Use correct field names for query!
         $doc = $this->MqaComDocModel
-            ->where('mcd_mci_id', $id)
+            ->where('mcd_mci_id', $mci_id)
             ->where('mcd_programme_code', $programme_code)
             ->first();
+
         if ($doc) {
             $this->MqaComDocModel->update($doc['mcd_id'], ['mcd_message' => $message]);
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Message updated.',
+                'csrfHash' => csrf_hash()
+            ]);
+        } else {
+            $this->MqaComDocModel->insert([
+                'mcd_mci_id' => $mci_id,
+                'mcd_programme_code' => $programme_code,
+                'mcd_message' => $message,
+                'mcd_uploader' => session('user_id') ?? 'public'
+            ]);
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Message created.',
+                'csrfHash' => csrf_hash()
+            ]);
         }
-        return redirect()->back()->with('success', 'Message sent successfully.');
     }
     public function ListProg($id)
     {
@@ -234,15 +269,44 @@ class ProgramController extends BaseController
     public function PubC()
     {
         $programme_code = $this->request->getGet('programme_code');
-        $section_char = $this->request->getGet('section') ?? 'C'; // Default to 'C'
+        $section_char = $this->request->getGet('section') ?? 'C';
 
-        // Get the specific section
-        $section = $this->MqaComSectionModel
-            ->where('mcs_section_char', strtoupper($section_char))
-            ->first();
+        // Handle message POST (no AJAX)
+        $messageSuccess = null;
+        $messageError = null;
+        if ($this->request->getMethod() === 'post' && $this->request->getPost('mci_id')) {
+            $mci_id = $this->request->getPost('mci_id');
+            $programme_code_post = $this->request->getPost('programme_code');
+            $message = $this->request->getPost('mcd_message');
+
+            if ($mci_id && $programme_code_post) {
+                $doc = $this->MqaComDocModel
+                    ->where('mcd_mci_id', $mci_id)
+                    ->where('mcd_programme_code', $programme_code_post)
+                    ->first();
+
+                if ($doc) {
+                    $this->MqaComDocModel->update($doc['mcd_id'], ['mcd_message' => $message]);
+                    $messageSuccess = 'Message updated.';
+                } else {
+                    $this->MqaComDocModel->insert([
+                        'mcd_mci_id' => $mci_id,
+                        'mcd_programme_code' => $programme_code_post,
+                        'mcd_message' => $message,
+                        'mcd_uploader' => session('user_id') ?? 'public'
+                    ]);
+                    $messageSuccess = 'Message created.';
+                }
+            } else {
+                $messageError = 'Missing required data.';
+            }
+        }
 
         $sections = [];
         $itemsBySection = [];
+        $section = $this->MqaComSectionModel
+            ->where('mcs_section_char', strtoupper($section_char))
+            ->first();
 
         if ($section) {
             $sections[] = $section;
@@ -258,7 +322,6 @@ class ProgramController extends BaseController
                 ->findAll();
         }
 
-        // Fetch the program row by programme_code
         $program = $this->programModel
             ->join('mqa04_compliance_documents', 'mqa04_compliance_documents.mcd_id = program.p_mcd_id', 'left')
             ->where('mqa04_compliance_documents.mcd_programme_code', $programme_code)
@@ -272,6 +335,8 @@ class ProgramController extends BaseController
             'programme_code' => $programme_code,
             'program_id' => $program_id,
             'program_slug' => $program ? $program->p_slug : '',
+            'messageSuccess' => $messageSuccess,
+            'messageError' => $messageError,
         ];
 
         return $this->render_public('PubC', $data);
@@ -355,12 +420,17 @@ class ProgramController extends BaseController
             ->where('sm_p_id', $program->p_id)
             ->findAll();
 
+        // Check for ?edit=1 in the URL
+        $editing = $this->request->getGet('edit') == '1';
+
         $data = [
             'program' => $program,
-            'studyModes' => $studyModes
+            'studyModes' => $studyModes,
+            'editing' => $editing, // Pass to view
         ];
 
         return $this->render_public('ListProg', $data);
     }
 }
+
 

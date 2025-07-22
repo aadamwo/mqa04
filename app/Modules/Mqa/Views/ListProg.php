@@ -1,6 +1,11 @@
+<?php
+// Add this at the very top of your file
+if (!isset($editing)) {
+    $editing = false;
+}
+?>
 
     <title>Program Details</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -131,9 +136,19 @@
         }
         
         .table td {
-            padding: 1rem 1.5rem;
+            padding: 0.5rem 1.5rem;
             border-bottom: 1px solid #e2e8f0;
             vertical-align: middle;
+        }
+        
+        .table th:first-child,
+        .table td:first-child,
+        .table th:nth-child(3),
+        .table td:nth-child(3) {
+            width: 1%;
+            white-space: nowrap;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
         }
         
         .table-striped tbody tr:nth-of-type(odd) {
@@ -237,14 +252,7 @@
 </head>
 <body>
 <main id="js-page-content" role="main" class="page-content">
-    <ol class="breadcrumb page-breadcrumb">
-        <li class="breadcrumb-item"><a href="<?= base_url('/') ?>">Home</a></li>
-        <li class="breadcrumb-item">Category</li>
-        <li class="breadcrumb-item">Sub-category</li>
-        <li class="breadcrumb-item active">Program Details</li>
-        <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
-    </ol>
-
+   
     <div class="container py-4">
         <div class="summary-card d-flex align-items-center mb-4">
             <div class="icon-box me-3">
@@ -267,74 +275,154 @@
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-striped mb-0">
+                        <colgroup>
+                            <col style="width:1%; white-space:nowrap;">
+                            <col>
+                            <col style="width:1%; white-space:nowrap;">
+                            <col>
+                        </colgroup>
                         <tbody>
-                            <tr><th>Certificate Number</th><td><?= esc($program->p_certificate_number) ?></td></tr>
-                            <tr><th>Accreditation Date</th><td><?= esc($program->p_accreditation_date) ?></td></tr>
-                            <tr><th>Institution Name</th><td><?= esc($program->p_inst_name) ?></td></tr>
-                            <tr><th>Institution Address</th><td><?= esc($program->p_inst_address) ?></td></tr>
-                            <tr><th>Phone Number</th><td><?= esc($program->p_phone_number) ?></td></tr>
-                            <tr><th>Fax Number</th><td><?= esc($program->p_fax_number) ?></td></tr>
-                            <tr><th>Email Address</th><td><?= esc($program->p_email_address) ?></td></tr>
-                            <tr><th>Website</th><td><?= esc($program->p_website) ?></td></tr>
-                            <tr><th>Compliance Audit</th><td><?= esc($program->p_compliance_audit) ?></td></tr>
-                            <tr><th>MQF Level</th><td><?= esc($program->p_mqf_level) ?></td></tr>
-                            <tr><th>NEC Field</th><td><?= esc($program->p_nec_field) ?></td></tr>
-                            <tr><th>Total Credits</th><td><?= esc($program->p_total_credits) ?></td></tr>
+                            <tr>
+                                <th>Certificate Number</th>
+                                <td><?= esc($program->p_certificate_number) ?></td>
+                                <th>Accreditation Date</th>
+                                <td><?= esc($program->p_accreditation_date) ?></td>
+                            </tr>
+                            <tr>
+                                <th>Institution Name</th>
+                                <td><?= esc($program->p_inst_name) ?></td>
+                                <th>Institution Address</th>
+                                <td><?= esc($program->p_inst_address) ?></td>
+                            </tr>
+                            <tr>
+                                <th>Phone Number</th>
+                                <td><?= esc($program->p_phone_number) ?></td>
+                                <th>Fax Number</th>
+                                <td><?= esc($program->p_fax_number) ?></td>
+                            </tr>
+                            <tr>
+                                <th>Email Address</th>
+                                <td><?= esc($program->p_email_address) ?></td>
+                                <th>Website</th>
+                                <td><?= esc($program->p_website) ?></td>
+                            </tr>
+                            <tr>
+                                <th>Compliance Audit</th>
+                                <td><?= esc($program->p_compliance_audit) ?></td>
+                                <th>MQF Level</th>
+                                <td><?= esc($program->p_mqf_level) ?></td>
+                            </tr>
+                            <tr>
+                                <th>NEC Field</th>
+                                <td><?= esc($program->p_nec_field) ?></td>
+                                <th>Total Credits</th>
+                                <td><?= esc($program->p_total_credits) ?></td>
+                            </tr>
                             <tr>
                                 <th>Study Duration</th>
-                                <td>
+                                <td colspan="3">
                                     <?php if (!empty($studyModes)): ?>
-                                        <?php 
-                                        $hasFullTime = false;
-                                        $hasPartTime = false;
+                                        <?php
+                                        $fullTime = null;
+                                        $partTime = null;
                                         foreach ($studyModes as $mode) {
-                                            if ($mode->sm_type === 'Sepenuh Masa') $hasFullTime = true;
-                                            if ($mode->sm_type === 'Separuh Masa') $hasPartTime = true;
+                                            if (strtolower($mode->sm_type) === 'sepenuh masa' && (
+                                                $mode->sm_long_sem || $mode->sm_short_sem || $mode->sm_long_sem_week ||
+                                                $mode->sm_short_sem_week || $mode->sm_long_sem_total || $mode->sm_short_sem_total || $mode->sm_duration
+                                            )) {
+                                                $fullTime = $mode;
+                                            }
+                                            if (strtolower($mode->sm_type) === 'separuh masa' && (
+                                                $mode->sm_long_sem || $mode->sm_short_sem || $mode->sm_long_sem_week ||
+                                                $mode->sm_short_sem_week || $mode->sm_long_sem_total || $mode->sm_short_sem_total || $mode->sm_duration
+                                            )) {
+                                                $partTime = $mode;
+                                            }
                                         }
+                                        $hasFullTime = !empty($fullTime);
+                                        $hasPartTime = !empty($partTime);
                                         ?>
                                         
                                         <?php if ($hasFullTime && $hasPartTime): ?>
                                             <div class="mb-3">
-                                                <select class="form-select study-mode-selector">
+                                                <select class="form-select study-mode-selector" style="max-width:200px;">
                                                     <option value="sepenuh_masa">Sepenuh Masa</option>
                                                     <option value="separuh_masa">Separuh Masa</option>
                                                 </select>
                                             </div>
-                                        <?php endif; ?>
-                                        
-                                        <div class="study-mode-container">
-                                            <?php foreach ($studyModes as $mode): ?>
-                                                <div class="study-mode-content <?= strtolower(str_replace(' ', '_', $mode->sm_type)) ?> <?= ($hasFullTime && $hasPartTime && $mode->sm_type === 'Sepenuh Masa') || !($hasFullTime && $hasPartTime) ? 'active' : '' ?>">
+                                            <div class="study-mode-container">
+                                                <div class="study-mode-content sepenuh_masa active">
+                                                    <!-- Full Time Table -->
                                                     <div class="mb-3">
-                                                        <h5 class="mb-3 text-primary"><?= esc($mode->sm_type) ?></h5>
+                                                        <h5 class="mb-3 text-primary"><?= esc($fullTime->sm_type) ?></h5>
                                                         <div class="study-mode-table">
                                                             <table class="table table-bordered mb-2">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th colspan="2" class="text-center">Study Mode Details</th>
-                                                                    </tr>
-                                                                </thead>
                                                                 <tbody>
-                                                                    <tr><th>Long Sem (Bil.Semester)</th><td><?= esc($mode->sm_long_sem ?? '-') ?></td></tr>
-                                                                    <tr><th>Short Sem (Bil.Semester)</th><td><?= esc($mode->sm_short_sem ?? '-') ?></td></tr>
-                                                                    <tr><th>Long Sem Week (Bil.Minggu)</th><td><?= esc($mode->sm_long_sem_week ?? '-') ?></td></tr>
-                                                                    <tr><th>Short Sem Week (Bil.Minggu)</th><td><?= esc($mode->sm_short_sem_week ?? '-') ?></td></tr>
-                                                                    <tr><th>Long Sem Total</th><td><?= esc($mode->sm_long_sem_total ?? '-') ?></td></tr>
-                                                                    <tr><th>Short Sem Total</th><td><?= esc($mode->sm_short_sem_total ?? '-') ?></td></tr>
-                                                                    <tr><th>Duration (Tempoh)</th><td><?= esc($mode->sm_duration ?? '-') ?></td></tr>
+                                                                    <tr><th>Long Sem (Bil.Semester)</th><td><?= esc($fullTime->sm_long_sem ?? '-') ?></td></tr>
+                                                                    <tr><th>Short Sem (Bil.Semester)</th><td><?= esc($fullTime->sm_short_sem ?? '-') ?></td></tr>
+                                                                    <tr><th>Long Sem Week (Bil.Minggu)</th><td><?= esc($fullTime->sm_long_sem_week ?? '-') ?></td></tr>
+                                                                    <tr><th>Short Sem Week (Bil.Minggu)</th><td><?= esc($fullTime->sm_short_sem_week ?? '-') ?></td></tr>
+                                                                    <tr><th>Long Sem Total</th><td><?= esc($fullTime->sm_long_sem_total ?? '-') ?></td></tr>
+                                                                    <tr><th>Short Sem Total</th><td><?= esc($fullTime->sm_short_sem_total ?? '-') ?></td></tr>
+                                                                    <tr><th>Duration (Tempoh)</th><td><?= esc($fullTime->sm_duration ?? '-') ?></td></tr>
                                                                 </tbody>
                                                             </table>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            <?php endforeach; ?>
-                                        </div>
+                                                <div class="study-mode-content separuh_masa">
+                                                    <!-- Part Time Table -->
+                                                    <div class="mb-3">
+                                                        <h5 class="mb-3 text-primary"><?= esc($partTime->sm_type) ?></h5>
+                                                        <div class="study-mode-table">
+                                                            <table class="table table-bordered mb-2">
+                                                                <tbody>
+                                                                    <tr><th>Long Sem (Bil.Semester)</th><td><?= esc($partTime->sm_long_sem ?? '-') ?></td></tr>
+                                                                    <tr><th>Short Sem (Bil.Semester)</th><td><?= esc($partTime->sm_short_sem ?? '-') ?></td></tr>
+                                                                    <tr><th>Long Sem Week (Bil.Minggu)</th><td><?= esc($partTime->sm_long_sem_week ?? '-') ?></td></tr>
+                                                                    <tr><th>Short Sem Week (Bil.Minggu)</th><td><?= esc($partTime->sm_short_sem_week ?? '-') ?></td></tr>
+                                                                    <tr><th>Long Sem Total</th><td><?= esc($partTime->sm_long_sem_total ?? '-') ?></td></tr>
+                                                                    <tr><th>Short Sem Total</th><td><?= esc($partTime->sm_short_sem_total ?? '-') ?></td></tr>
+                                                                    <tr><th>Duration (Tempoh)</th><td><?= esc($partTime->sm_duration ?? '-') ?></td></tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php elseif ($hasFullTime || $hasPartTime): ?>
+                                            <div class="study-mode-container">
+                                                <div class="study-mode-content <?= $hasFullTime ? 'sepenuh_masa active' : 'separuh_masa active' ?>">
+                                                    <div class="mb-3">
+                                                        <h5 class="mb-3 text-primary"><?= esc($hasFullTime ? $fullTime->sm_type : $partTime->sm_type) ?></h5>
+                                                        <div class="study-mode-table">
+                                                            <table class="table table-bordered mb-2">
+                                                                <tbody>
+                                                                    <tr><th>Long Sem (Bil.Semester)</th><td><?= esc(($hasFullTime ? $fullTime : $partTime)->sm_long_sem ?? '-') ?></td></tr>
+                                                                    <tr><th>Short Sem (Bil.Semester)</th><td><?= esc(($hasFullTime ? $fullTime : $partTime)->sm_short_sem ?? '-') ?></td></tr>
+                                                                    <tr><th>Long Sem Week (Bil.Minggu)</th><td><?= esc(($hasFullTime ? $fullTime : $partTime)->sm_long_sem_week ?? '-') ?></td></tr>
+                                                                    <tr><th>Short Sem Week (Bil.Minggu)</th><td><?= esc(($hasFullTime ? $fullTime : $partTime)->sm_short_sem_week ?? '-') ?></td></tr>
+                                                                    <tr><th>Long Sem Total</th><td><?= esc(($hasFullTime ? $fullTime : $partTime)->sm_long_sem_total ?? '-') ?></td></tr>
+                                                                    <tr><th>Short Sem Total</th><td><?= esc(($hasFullTime ? $fullTime : $partTime)->sm_short_sem_total ?? '-') ?></td></tr>
+                                                                    <tr><th>Duration (Tempoh)</th><td><?= esc(($hasFullTime ? $fullTime : $partTime)->sm_duration ?? '-') ?></td></tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php else: ?>
+                                            <span class="text-muted">No study mode data</span>
+                                        <?php endif; ?>
                                     <?php else: ?>
                                         <span class="text-muted">No study mode data</span>
                                     <?php endif; ?>
                                 </td>
                             </tr>
-                            <tr><th>Delivery Mode</th><td><?= esc($program->p_delivery_mode) ?></td></tr>
+                            <tr>
+                                <th>Delivery Mode</th>
+                                <td colspan="3"><?= esc($program->p_delivery_mode) ?></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -353,6 +441,12 @@
                     </div>
                     <div class="card-body p-0">
                         <table class="table table-striped mb-0">
+                            <colgroup>
+                                <col style="width:1%; white-space:nowrap;">
+                                <col>
+                                <col style="width:1%; white-space:nowrap;">
+                                <col>
+                            </colgroup>
                             <tbody>
                                 <tr>
                                     <th>Certificate Number</th>
@@ -406,78 +500,150 @@
                                     <th>Study Duration</th>
                                     <td>
                                         <?php if (!empty($studyModes)): ?>
-                                            <?php 
-                                            $hasFullTime = false;
-                                            $hasPartTime = false;
+                                            <?php
+                                            $fullTime = null;
+                                            $partTime = null;
                                             foreach ($studyModes as $mode) {
-                                                if ($mode->sm_type === 'Sepenuh Masa') $hasFullTime = true;
-                                                if ($mode->sm_type === 'Separuh Masa') $hasPartTime = true;
+                                                if (strtolower($mode->sm_type) === 'sepenuh masa' && (
+                                                    $mode->sm_long_sem || $mode->sm_short_sem || $mode->sm_long_sem_week ||
+                                                    $mode->sm_short_sem_week || $mode->sm_long_sem_total || $mode->sm_short_sem_total || $mode->sm_duration
+                                                )) {
+                                                    $fullTime = $mode;
+                                                }
+                                                if (strtolower($mode->sm_type) === 'separuh masa' && (
+                                                    $mode->sm_long_sem || $mode->sm_short_sem || $mode->sm_long_sem_week ||
+                                                    $mode->sm_short_sem_week || $mode->sm_long_sem_total || $mode->sm_short_sem_total || $mode->sm_duration
+                                                )) {
+                                                    $partTime = $mode;
+                                                }
                                             }
+                                            $hasFullTime = !empty($fullTime);
+                                            $hasPartTime = !empty($partTime);
                                             ?>
                                             
                                             <?php if ($hasFullTime && $hasPartTime): ?>
                                                 <div class="mb-3">
-                                                    <select class="form-select study-mode-selector">
+                                                    <select class="form-select study-mode-selector" style="max-width:200px;">
                                                         <option value="sepenuh_masa">Sepenuh Masa</option>
                                                         <option value="separuh_masa">Separuh Masa</option>
                                                     </select>
                                                 </div>
-                                            <?php endif; ?>
-                                            
-                                            <div class="study-mode-container">
-                                                <?php foreach ($studyModes as $mode): ?>
-                                                    <div class="study-mode-content <?= strtolower(str_replace(' ', '_', $mode->sm_type)) ?> <?= ($hasFullTime && $hasPartTime && $mode->sm_type === 'Sepenuh Masa') || !($hasFullTime && $hasPartTime) ? 'active' : '' ?>">
+                                                <div class="study-mode-container">
+                                                    <div class="study-mode-content sepenuh_masa active">
+                                                        <!-- Full Time Table -->
                                                         <div class="mb-3">
-                                                            <h5 class="mb-3 text-primary"><?= esc($mode->sm_type) ?></h5>
-                                                            <input type="hidden" name="sm_id[]" value="<?= esc($mode->sm_id) ?>">
-                                                            <input type="hidden" name="sm_type_existing_<?= esc($mode->sm_id) ?>" value="<?= esc($mode->sm_type) ?>">
+                                                            <h5 class="mb-3 text-primary"><?= esc($fullTime->sm_type) ?></h5>
+                                                            <input type="hidden" name="sm_id[]" value="<?= esc($fullTime->sm_id) ?>">
+                                                            <input type="hidden" name="sm_type_existing_<?= esc($fullTime->sm_id) ?>" value="<?= esc($fullTime->sm_type) ?>">
                                                             <div class="row g-3">
                                                                 <div class="col-md-6 col-lg-4">
                                                                     <label class="form-label">Long Sem (Bil.Semester)</label>
-                                                                    <input type="number" name="sm_long_sem_existing_<?= esc($mode->sm_id) ?>" class="form-control" value="<?= esc($mode->sm_long_sem) ?>">
+                                                                    <input type="number" name="sm_long_sem_existing_<?= esc($fullTime->sm_id) ?>" class="form-control" value="<?= esc($fullTime->sm_long_sem) ?>">
                                                                 </div>
                                                                 <div class="col-md-6 col-lg-4">
                                                                     <label class="form-label">Short Sem (Bil.Semester)</label>
-                                                                    <input type="number" name="sm_short_sem_existing_<?= esc($mode->sm_id) ?>" class="form-control" value="<?= esc($mode->sm_short_sem) ?>">
+                                                                    <input type="number" name="sm_short_sem_existing_<?= esc($fullTime->sm_id) ?>" class="form-control" value="<?= esc($fullTime->sm_short_sem) ?>">
                                                                 </div>
                                                                 <div class="col-md-6 col-lg-4">
                                                                     <label class="form-label">Long Sem Week (Bil.Minggu)</label>
-                                                                    <input type="number" name="sm_long_sem_week_existing_<?= esc($mode->sm_id) ?>" class="form-control" value="<?= esc($mode->sm_long_sem_week) ?>">
+                                                                    <input type="number" name="sm_long_sem_week_existing_<?= esc($fullTime->sm_id) ?>" class="form-control" value="<?= esc($fullTime->sm_long_sem_week) ?>">
                                                                 </div>
                                                                 <div class="col-md-6 col-lg-4">
                                                                     <label class="form-label">Short Sem Week (Bil.Minggu)</label>
-                                                                    <input type="number" name="sm_short_sem_week_existing_<?= esc($mode->sm_id) ?>" class="form-control" value="<?= esc($mode->sm_short_sem_week) ?>">
+                                                                    <input type="number" name="sm_short_sem_week_existing_<?= esc($fullTime->sm_id) ?>" class="form-control" value="<?= esc($fullTime->sm_short_sem_week) ?>">
                                                                 </div>
                                                                 <div class="col-md-6 col-lg-4">
                                                                     <label class="form-label">Long Sem Total</label>
-                                                                    <input type="number" name="sm_long_sem_total_existing_<?= esc($mode->sm_id) ?>" class="form-control" value="<?= esc($mode->sm_long_sem_total) ?>">
+                                                                    <input type="number" name="sm_long_sem_total_existing_<?= esc($fullTime->sm_id) ?>" class="form-control" value="<?= esc($fullTime->sm_long_sem_total) ?>">
                                                                 </div>
                                                                 <div class="col-md-6 col-lg-4">
                                                                     <label class="form-label">Short Sem Total</label>
-                                                                    <input type="number" name="sm_short_sem_total_existing_<?= esc($mode->sm_id) ?>" class="form-control" value="<?= esc($mode->sm_short_sem_total) ?>">
+                                                                    <input type="number" name="sm_short_sem_total_existing_<?= esc($fullTime->sm_id) ?>" class="form-control" value="<?= esc($fullTime->sm_short_sem_total) ?>">
                                                                 </div>
                                                                 <div class="col-12">
                                                                     <label class="form-label">Duration (Tempoh)</label>
-                                                                    <input type="text" name="sm_duration_existing_<?= esc($mode->sm_id) ?>" class="form-control" value="<?= esc($mode->sm_duration) ?>">
+                                                                    <input type="text" name="sm_duration_existing_<?= esc($fullTime->sm_id) ?>" class="form-control" value="<?= esc($fullTime->sm_duration) ?>">
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                <?php endforeach; ?>
+                                                    <div class="study-mode-content separuh_masa">
+                                                        <!-- Part Time Table -->
+                                                        <div class="mb-3">
+                                                            <h5 class="mb-3 text-primary"><?= esc($partTime->sm_type) ?></h5>
+                                                            <input type="hidden" name="sm_id[]" value="<?= esc($partTime->sm_id) ?>">
+                                                            <input type="hidden" name="sm_type_existing_<?= esc($partTime->sm_id) ?>" value="<?= esc($partTime->sm_type) ?>">
+                                                            <div class="row g-3">
+                                                                <div class="col-md-6 col-lg-4">
+                                                                    <label class="form-label">Long Sem (Bil.Semester)</label>
+                                                                    <input type="number" name="sm_long_sem_existing_<?= esc($partTime->sm_id) ?>" class="form-control" value="<?= esc($partTime->sm_long_sem) ?>">
+                                                                </div>
+                                                                <div class="col-md-6 col-lg-4">
+                                                                    <label class="form-label">Short Sem (Bil.Semester)</label>
+                                                                    <input type="number" name="sm_short_sem_existing_<?= esc($partTime->sm_id) ?>" class="form-control" value="<?= esc($partTime->sm_short_sem) ?>">
+                                                                </div>
+                                                                <div class="col-md-6 col-lg-4">
+                                                                    <label class="form-label">Long Sem Week (Bil.Minggu)</label>
+                                                                    <input type="number" name="sm_long_sem_week_existing_<?= esc($partTime->sm_id) ?>" class="form-control" value="<?= esc($partTime->sm_long_sem_week) ?>">
+                                                                </div>
+                                                                <div class="col-md-6 col-lg-4">
+                                                                    <label class="form-label">Short Sem Week (Bil.Minggu)</label>
+                                                                    <input type="number" name="sm_short_sem_week_existing_<?= esc($partTime->sm_id) ?>" class="form-control" value="<?= esc($partTime->sm_short_sem_week) ?>">
+                                                                </div>
+                                                                <div class="col-md-6 col-lg-4">
+                                                                    <label class="form-label">Long Sem Total</label>
+                                                                    <input type="number" name="sm_long_sem_total_existing_<?= esc($partTime->sm_id) ?>" class="form-control" value="<?= esc($partTime->sm_long_sem_total) ?>">
+                                                                </div>
+                                                                <div class="col-md-6 col-lg-4">
+                                                                    <label class="form-label">Short Sem Total</label>
+                                                                    <input type="number" name="sm_short_sem_total_existing_<?= esc($partTime->sm_id) ?>" class="form-control" value="<?= esc($partTime->sm_short_sem_total) ?>">
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    <label class="form-label">Duration (Tempoh)</label>
+                                                                    <input type="text" name="sm_duration_existing_<?= esc($partTime->sm_id) ?>" class="form-control" value="<?= esc($partTime->sm_duration) ?>">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php elseif ($hasFullTime || $hasPartTime): ?>
+                                            <div class="study-mode-container">
+                                                <div class="study-mode-content <?= $hasFullTime ? 'sepenuh_masa active' : 'separuh_masa active' ?>">
+                                                    <div class="mb-3">
+                                                        <h5 class="mb-3 text-primary"><?= esc($hasFullTime ? $fullTime->sm_type : $partTime->sm_type) ?></h5>
+                                                        <div class="study-mode-table">
+                                                            <table class="table table-bordered mb-2">
+                                                                <tbody>
+                                                                    <tr><th>Long Sem (Bil.Semester)</th><td><?= esc(($hasFullTime ? $fullTime : $partTime)->sm_long_sem ?? '-') ?></td></tr>
+                                                                    <tr><th>Short Sem (Bil.Semester)</th><td><?= esc(($hasFullTime ? $fullTime : $partTime)->sm_short_sem ?? '-') ?></td></tr>
+                                                                    <tr><th>Long Sem Week (Bil.Minggu)</th><td><?= esc(($hasFullTime ? $fullTime : $partTime)->sm_long_sem_week ?? '-') ?></td></tr>
+                                                                    <tr><th>Short Sem Week (Bil.Minggu)</th><td><?= esc(($hasFullTime ? $fullTime : $partTime)->sm_short_sem_week ?? '-') ?></td></tr>
+                                                                    <tr><th>Long Sem Total</th><td><?= esc(($hasFullTime ? $fullTime : $partTime)->sm_long_sem_total ?? '-') ?></td></tr>
+                                                                    <tr><th>Short Sem Total</th><td><?= esc(($hasFullTime ? $fullTime : $partTime)->sm_short_sem_total ?? '-') ?></td></tr>
+                                                                    <tr><th>Duration (Tempoh)</th><td><?= esc(($hasFullTime ? $fullTime : $partTime)->sm_duration ?? '-') ?></td></tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         <?php else: ?>
                                             <span class="text-muted">No study mode data</span>
                                         <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Delivery Mode</th>
-                                    <td><input type="text" name="p_delivery_mode" class="form-control" value="<?= esc($program->p_delivery_mode) ?>"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                    <?php else: ?>
+                                        <span class="text-muted">No study mode data</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Delivery Mode</th>
+                                <td><input type="text" name="p_delivery_mode" class="form-control" value="<?= esc($program->p_delivery_mode) ?>"></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-4">
                     <a href="<?= current_url() ?>" class="btn btn-outline-secondary btn-custom">&larr; Cancel</a>
                     <button type="submit" class="btn btn-success btn-custom">Save Changes</button>
@@ -508,3 +674,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+</body>
+</html>
