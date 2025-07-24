@@ -320,6 +320,30 @@
             color: #2980b9;
         }
 
+        /* Custom tab colors */
+        .nav-tabs .nav-link {
+            color: var(--primary);
+            font-weight: 500;
+            background: var(--light-accent);
+            border: 1px solid var(--border);
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            margin-right: 4px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--accent);
+            color: #fff !important;
+            border-color: var(--accent) var(--accent) #fff;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.08);
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid var(--accent);
+        }
+
         @media (max-width: 767px) {
             .container {
                 padding: 1rem;
@@ -351,8 +375,32 @@
 
 <main id="js-page-content" role="main" class="page-content">
     <div class="container">
-        
 
+        <!-- TAB NAVIGATION: Place this FIRST -->
+        <div class="mb-4">
+            <ul class="nav nav-tabs" id="sectionTabs">
+                <li class="nav-item">
+                    <a class="nav-link <?= ($_GET['section'] ?? 'A') == 'A' ? 'active' : '' ?>"
+                       href="<?= base_url('PubA.php?programme_code=' . urlencode($programme_code) . '&section=A') ?>">
+                        <i class="fas fa-file-contract me-1"></i> Section A
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= ($_GET['section'] ?? '') == 'B' ? 'active' : '' ?>"
+                       href="<?= base_url('PubB.php?programme_code=' . urlencode($programme_code) . '&section=B') ?>">
+                        <i class="fas fa-file-alt me-1"></i> Section B
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= ($_GET['section'] ?? '') == 'C' ? 'active' : '' ?>"
+                       href="<?= base_url('PubC.php?programme_code=' . urlencode($programme_code) . '&section=C') ?>">
+                        <i class="fas fa-file-signature me-1"></i> Section C
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- HEADER CARD: Place this AFTER tabs -->
         <div class="header-card">
             <div class="d-flex justify-content-between align-items-center flex-wrap">
                 <div>
@@ -386,7 +434,7 @@
                             <th style="width: 30%;">ITEM</th>
                             <th style="width: 20%;">RESPONSIBILITY</th>
                             <th style="width: 35%;">EVIDENCE FILE</th>
-                            <th style="width: 10%;">MESSAGE</th>
+                            <th style="width: 10%;">NOTE</th>
                         </tr>
                         </thead>
                         <tbody>

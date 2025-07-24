@@ -430,7 +430,7 @@ if (!isset($editing)) {
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-4">
                 <a href="<?= base_url('ProgramSec.php') ?>" class="btn btn-outline-secondary btn-custom">&larr; Back to Program List</a>
                 <a href="<?= current_url() . '?edit=1' ?>" class="btn btn-warning btn-custom">Edit</a>
-                <a href="<?= base_url('PubA.php?programme_code=' . urlencode($program->mcd_programme_code)) ?>" class="btn btn-primary btn-custom">Upload</a>
+                <a href="<?= base_url('PubA.php?programme_code=' . urlencode($program->mcd_programme_code)) ?>" class="btn btn-primary btn-custom">Go to Section</a>
             </div>
         <?php else: ?>
             <form method="post" action="<?= base_url('updateProgram/' . $program->p_id) ?>">
